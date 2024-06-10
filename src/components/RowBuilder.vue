@@ -185,6 +185,7 @@ function validateInputs(): boolean {
 </script>
 
 <template>
+  <h2>Faculty Table Rows</h2>
   <div class="gui-container">
     <section class="form-container">
       <h3>Edit Fields</h3>
