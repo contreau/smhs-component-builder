@@ -1,0 +1,199 @@
+*,
+*::after,
+*::before {
+  box-sizing: border-box;
+}
+
+@font-face {
+  font-family: Avenir Next LT W01-Regular;
+  src: url("../src/assets/AvenirNextLTPro-Regular.otf");
+}
+
+@font-face {
+  font-family: Avenir Next LT W01 Demi;
+  src: url("../src/assets/AvenirNextLTPro-Demi.otf");
+}
+
+body {
+  font-family: system-ui;
+  /* font-family: "Avenir Next LT W01-Regular", "Helvetica", "Arial", "sans-serif"; */
+  font-size: 17px;
+  line-height: 1.5;
+  color: #333;
+  font-weight: normal;
+}
+
+.mdbluetext {
+  font-size: 1.125em;
+  font-family: "Avenir Next LT W01 Demi", sans-serif;
+  color: #033c5a;
+  line-height: 1.5;
+  min-height: 37px;
+}
+
+.highlighted-text {
+  font-family: "Avenir Next LT W01 Demi", sans-serif;
+  min-height: 34px;
+}
+
+p {
+  margin-top: 12px;
+  margin-bottom: 12px;
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+a {
+  color: #0a5b80;
+  cursor: pointer;
+  transition: all 0.2s ease-out 0s;
+  text-decoration: underline;
+  background-color: transparent;
+}
+
+p,
+a {
+  text-rendering: optimizeLegibility;
+}
+
+.field--type-image {
+  padding: 10px;
+}
+
+.img-responsive {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+.table-responsive {
+  min-height: 0.01%;
+  /* overflow-x: auto; */
+  background-color: #ffffff;
+}
+
+.table {
+  width: 100%;
+  max-width: 100%;
+  margin-bottom: 20px;
+}
+
+table {
+  background-color: transparent;
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+.table > tbody > tr > td {
+  border-top: 0;
+  padding: 15px;
+  padding-top: 15px;
+  padding-bottom: 15px;
+  line-height: 1.5;
+  vertical-align: top;
+}
+
+.table-faculty tbody {
+  border-top: solid 5px #0a5b80;
+}
+
+.table-faculty tbody tr {
+  --border-color: #0a5b8045;
+}
+
+.table-faculty tbody tr:hover img {
+  --border-color: #033c5a;
+}
+
+.table-hover > tbody > tr:hover {
+  background-color: #f5f5f5;
+}
+
+.table-faculty tbody tr td div.picture-frame img {
+  border-radius: 8px;
+  border: solid 7px var(--border-color);
+  transition: border 0.4s;
+}
+
+.table-faculty tbody tr td div.faculty-info {
+  padding: 0.5em;
+}
+
+.table-faculty tbody tr td div.faculty-info div.faculty-icon--container {
+  display: inline;
+  margin-right: 0.5rem;
+  :is(a) {
+    text-decoration: none;
+  }
+}
+
+a:hover,
+a:focus {
+  color: #0a5b80;
+  text-decoration: none;
+  border-bottom: 1px solid #ffd400;
+}
+
+.table-faculty
+  tbody
+  tr
+  td
+  div.faculty-info
+  div.faculty-icon--container
+  a
+  span.faculty-icon--color {
+  border: solid 2px #033c5a;
+  padding-left: 10px;
+  padding-right: 10px;
+  border-radius: 5px;
+  padding-top: 8px;
+  padding-bottom: 5px;
+  background-color: #033c5a;
+  color: #ffffff;
+  transition: 0.3s all;
+}
+
+.table-faculty
+  tbody
+  tr
+  td
+  div.faculty-info
+  div.faculty-icon--container
+  a
+  span.faculty-icon--color:hover {
+  background-color: #ffffff;
+  color: #033c5a;
+}
+
+.table-faculty tbody tr td {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.table-faculty .picture-frame .field--name-image {
+  margin-bottom: 0;
+}
+
+.table-hover tbody tr {
+  transition: background-color 0.4s;
+}
+
+.table-faculty tr td:first-of-type {
+  width: 29.5%;
+}
+
+@media (max-width: 768px) {
+  .table-faculty tr td:first-of-type {
+    width: 50%;
+  }
+  .table-faculty tbody tr td div.faculty-info p.highlighted-text {
+    font-size: clamp(9px, 3vw, 17px);
+  }
+}
+
+@media (max-width: 360px) {
+  .table-faculty tbody tr td div.faculty-info div.faculty-icon--container {
+    margin-top: 1.5rem;
+    display: block;
+  }
+}
