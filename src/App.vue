@@ -44,10 +44,14 @@ const currentView = computed(() => {
   --white: #ffffff;
 }
 
+body,
 html {
-  scrollbar-gutter: stable both-edges;
   margin: 0;
   padding: 0;
+}
+
+html {
+  scrollbar-gutter: stable both-edges;
   background-color: #f1f1f1;
 }
 
@@ -64,7 +68,7 @@ h2 {
   display: flex;
   align-items: center;
 
-  h1 {
+  :is(h1) {
     color: var(--gw);
   }
 

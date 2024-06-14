@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, reactive, Ref } from "vue";
+import { facultyRow, facultyRowNoURL } from "../ts/templates";
 const titleText = ref("");
 const nameText = ref("");
 const profileLink = ref("");
@@ -7,85 +8,12 @@ const email = ref("");
 const remainingTitles = ref(4);
 const copiedMessage = ref(false);
 const missingFieldMessage = ref(false);
+const disableURLs = ref(false);
 const store = reactive({
   titles: <string[]>[],
 });
 
-// TODO: Highlight inserted HTML with some color
-
-class facultyRow {
-  html: string;
-  titles: string;
-  constructor(storedTitles: string[]) {
-    let titles = storedTitles.slice();
-    let titleString = "";
-    if (titles.length >= 1) {
-      for (let i = 0; i < titles.length; i++) {
-        if (i === 0) {
-          titles[i] = "<br>" + titles[i];
-        }
-        if (i !== titles.length - 1) {
-          titles[i] = titles[i] + "<br>";
-        }
-      }
-    }
-    for (let title of titles) {
-      titleString += title;
-    }
-    this.titles = titleString;
-    this.html = `
-    <tr>
-      <td>
-        <div class="picture-frame">
-          <div class="field--type-image">
-            <img
-              class="img-responsive"
-              loading="lazy"
-              src="https://smhs.gwu.edu/sites/g/files/zaskib1151/files/styles/1920_x_variable/public/2024-04/avatar-headshot--200x245.jpg?itok=_5durzkz"
-              width="200"
-              height="245"
-              alt="Avatar wearing GW white coat"
-              typeof="foaf:Image"
-            />
-          </div>
-        </div>
-      </td>
-      <td>
-        <div class="faculty-info">
-          <p class="mdbluetext">
-            <a href="${profileLink.value}" target="_blank">${nameText.value}</a>
-          </p>
-          <p class="highlighted-text">${titleText.value + this.titles}</p>
-          <div class="faculty-icon--container">
-            <a
-              href="${profileLink.value}"
-              target="_blank"
-              aria-label="View faculty profile"
-              role="button"
-              ><span class="faculty-icon--color"
-                ><span class="fontawesome-icon-inline"
-                  ><span class="fa-sharp fa-regular fa-address-card fa-lg">
-                  </span> </span></span
-            ></a>
-          </div>
-          <div class="faculty-icon--container">
-            <a
-              href="${email.value}"
-              target="_blank"
-              aria-label="Send email"
-              role="button"
-              ><span class="faculty-icon--color"
-                ><span class="fontawesome-icon-inline"
-                  ><span class="fa-sharp fa-regular fa-envelope fa-lg">
-                  </span> </span></span
-            ></a>
-          </div>
-        </div>
-      </td>
-    </tr>
-    `;
-  }
-}
+// TODO: consider adding toggle for direct email or email url (and find out how to hide the little envelope icon in smhs sites)
 
 // css classes
 const htmlTabActive = ref(false);
@@ -113,7 +41,19 @@ function deleteTitle(titleIndex: number) {
 
 async function copyHTML() {
   if (validateInputs()) {
-    const row = new facultyRow(store.titles);
+    let row: any;
+    if (disableURLs.value) {
+      row = new facultyRowNoURL(nameText, titleText, store.titles);
+    } else {
+      row = new facultyRow(
+        nameText,
+        titleText,
+        profileLink,
+        email,
+        store.titles
+      );
+    }
+
     await navigator.clipboard.writeText(row.html);
     copiedMessage.value = true;
     setTimeout(() => {
@@ -129,6 +69,7 @@ function clearFields() {
   email.value = "";
   remainingTitles.value = 4;
   store.titles = [];
+  disableURLs.value = false;
 }
 
 function trimInput(event: Event, state: string) {
@@ -152,7 +93,13 @@ function trimTitlesInput(event: Event, index: number) {
 }
 
 function validateInputs(): boolean {
-  const states: Ref[] = [nameText, titleText, profileLink, email];
+  let states: Ref[] = [];
+  if (disableURLs.value) {
+    states = [nameText, titleText];
+  } else if (!disableURLs.value) {
+    states = [nameText, titleText, profileLink, email];
+  }
+
   let status = false;
   if (store.titles.length > 0) {
     // check extra titles
@@ -191,7 +138,7 @@ function validateInputs(): boolean {
       <h3>Edit Fields</h3>
       <div class="form">
         <button @click="clearFields">
-          <i class="fa-solid fa-broom"></i>&nbsp;Clear All Fields
+          <i class="fa-solid fa-broom"></i>&nbsp;Reset All Fields
         </button>
         <div class="form-item">
           <h4>Name</h4>
@@ -236,21 +183,30 @@ function validateInputs(): boolean {
           {{ remainingTitles }} remaining )
         </button>
 
+        <div class="url-toggle-container">
+          <input id="checkbox" type="checkbox" v-model="disableURLs" />
+          <h4>
+            <label for="checkbox">Remove URLs from Row</label>
+          </h4>
+        </div>
+
         <div class="form-item">
-          <h4>Profile URL</h4>
+          <h4 :class="{ disabled: disableURLs }">Profile URL</h4>
           <input
             v-model="profileLink"
             type="text"
+            :disabled="disableURLs"
             @paste="trimInput($event, 'profileLink')"
             placeholder="Profile URL"
           />
         </div>
 
         <div class="form-item">
-          <h4>Email URL</h4>
+          <h4 :class="{ disabled: disableURLs }">Email URL</h4>
           <input
             v-model="email"
             type="text"
+            :disabled="disableURLs"
             @paste="trimInput($event, 'email')"
             placeholder="Email URL"
           />
@@ -304,7 +260,13 @@ function validateInputs(): boolean {
               <td>
                 <div class="faculty-info">
                   <p class="mdbluetext">
-                    <a :href="profileLink" target="_blank">{{ nameText }}</a>
+                    <a
+                      v-if="!disableURLs"
+                      :href="profileLink"
+                      target="_blank"
+                      >{{ nameText }}</a
+                    >
+                    <span v-if="disableURLs">{{ nameText }}</span>
                   </p>
                   <p class="highlighted-text">
                     {{ titleText }}
@@ -321,6 +283,7 @@ function validateInputs(): boolean {
                       target="_blank"
                       aria-label="View faculty profile"
                       role="button"
+                      v-if="!disableURLs"
                       ><span class="faculty-icon--color"
                         ><span class="fontawesome-icon-inline"
                           ><span
@@ -335,6 +298,7 @@ function validateInputs(): boolean {
                       target="_blank"
                       aria-label="Send email"
                       role="button"
+                      v-if="!disableURLs"
                       ><span class="faculty-icon--color"
                         ><span class="fontawesome-icon-inline"
                           ><span class="fa-sharp fa-regular fa-envelope fa-lg">
@@ -357,69 +321,106 @@ function validateInputs(): boolean {
         }"
       >
         <code>
-          &lt;tr&gt;<br />
-          &nbsp;&nbsp;&lt;td&gt;<br />
-          &nbsp;&nbsp;&nbsp;&nbsp;&lt;div class="picture-frame"&gt;<br />
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;div
-          class="field--type-image"&gt;<br />
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;img
-          class="img-responsive" loading="lazy" src="/path/to/image"
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;width="200"
-          height="245" alt="Avatar wearing GW white coat"
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;typeof="foaf:Image"
-          <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/&gt;<br />
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;<br />
-          &nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;<br />
-          &nbsp;&nbsp;&lt;/td&gt;<br />
-          &nbsp;&nbsp;&lt;td&gt;<br />
-          &nbsp;&nbsp;&nbsp;&nbsp;&lt;div class="faculty-info"&gt;<br />
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;p class="mdbluetext"&gt;<br />
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;a href="<span>{{
-            profileLink
-          }}</span
-          >" target="_blank"&gt;<span>{{ nameText }}</span
-          >&lt;/a&gt;<br />
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/p&gt;<br />
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;p
-          class="highlighted-text"&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
-            >{{ titleText }}</span
-          ><span v-for="item in store.titles">
-            <br />
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;br /&gt;
-            <br />
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ item }} </span
-          ><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/p&gt;<br />
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;div
-          class="faculty-icon--container"&gt;<br />
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;a
-          <br />
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;href="<span
-            >{{ profileLink }}</span
-          >"<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;target="_blank"<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;aria-label="View
-          faculty profile"
-          <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;role="button"&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;span
-          class="faculty-icon--color"&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;span
-          class="fontawesome-icon-inline"&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;span
-          class="fa-sharp fa-regular fa-address-card fa-lg"&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/span&gt;
-          <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/span&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/span&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/a&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;<br />
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;div
-          class="faculty-icon--container"&gt;<br />
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;a<br />
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;href="<span
-            >{{ email }}</span
-          >"
-          <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;target="_blank"<br />
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;aria-label="Send
-          email"<br />
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;role="button"&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;span
-          class="faculty-icon--color"&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;span
-          class="fontawesome-icon-inline"&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;span
-          class="fa-sharp fa-regular fa-envelope fa-lg"&gt;<br />
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/span&gt;<br />
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/span&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/span&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/a&gt;<br />
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;<br />
-          &nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;<br />
-          &nbsp;&nbsp;&lt;/td&gt;<br />
+          <div>&lt;tr&gt;</div>
+          <div class="ind-1">&lt;td&gt;</div>
+          <div class="ind-2">&lt;div class="picture-frame"&gt;</div>
+          <div class="ind-3">&lt;div class="field--type-image"&gt;</div>
+          <div class="ind-4">
+            &lt;img class="img-responsive" loading="lazy" src="/path/to/image"
+            <div class="ind-5">
+              width="200" height="245" alt="Avatar wearing GW white coat"
+            </div>
+            <div class="ind-5">typeof="foaf:Image"</div>
+            <div class="in-4">/&gt;</div>
+          </div>
+          <div class="ind-3">&lt;/div&gt;</div>
+          <div class="ind-2">&lt;/div&gt;</div>
+          <div class="ind-1">&lt;/td&gt;</div>
+          <div class="ind-1">&lt;td&gt;</div>
+          <div class="ind-2">&lt;div class="faculty-info"&gt;</div>
+          <div class="ind-3">&lt;p class="mdbluetext"&gt;</div>
+          <div class="ind-4">
+            <span v-if="!disableURLs"
+              >&lt;a href="<span class="input-text">{{ profileLink }}</span
+              >" target="_blank"&gt;<span class="input-text">{{
+                nameText
+              }}</span
+              >&lt;/a&gt;</span
+            >
+          </div>
+          <div class="ind-4">
+            <span v-if="disableURLs" class="input-text">{{ nameText }}</span>
+          </div>
+          <div class="ind-3">&lt;/p&gt;</div>
+          <div class="ind-3">
+            &lt;p class="highlighted-text"&gt;
+            <div class="ind-4">
+              <span class="input-text">{{ titleText }}</span>
+            </div>
+          </div>
+          <span v-for="item in store.titles">
+            <div class="ind-4">
+              &lt;br /&gt;
+              <div class="ind-4 input-text">{{ item }}</div>
+            </div>
+          </span>
+          <div class="ind-3">&lt;/p&gt;</div>
+          <span v-if="!disableURLs"
+            ><div class="ind-3">
+              &lt;div class="faculty-icon--container"&gt;
+            </div>
+            <div class="ind-4">&lt;a</div>
+            <div class="ind-5">
+              href="<span class="input-text">{{ profileLink }}</span
+              >"
+            </div>
+            <div class="ind-5">target="_blank"</div>
+            <div class="ind-5">aria-label="View faculty profile"</div>
+            <div class="ind-5">role="button"&gt;</div>
+            <div class="ind-6">&lt;span class="faculty-icon--color"&gt;</div>
+            <div class="ind-7">
+              &lt;span class="fontawesome-icon-inline"&gt;
+            </div>
+            <div class="ind-8">
+              &lt;span class="fa-sharp fa-regular fa-address-card fa-lg"&gt;
+            </div>
+            <div class="ind-8">&lt;/span&gt;</div>
+            <div class="ind-7">
+              &lt;/span&gt;
+              <div class="ind-6">&lt;/span&gt;</div>
+            </div>
+            <div class="ind-4">
+              &lt;/a&gt;
+              <div class="ind-3">&lt;/div&gt;</div>
+            </div></span
+          >
+          <span v-if="!disableURLs"
+            ><div class="ind-3">
+              &lt;div class="faculty-icon--container"&gt;
+            </div>
+            <div class="ind-4">&lt;a</div>
+            <div class="ind-5">
+              href="<span class="input-text">{{ email }}</span
+              >"
+            </div>
+            <div class="ind-5">target="_blank"</div>
+            <div class="ind-5">aria-label="Send email"</div>
+            <div class="ind-5">role="button"&gt;</div>
+            <div class="ind-6">&lt;span class="faculty-icon--color"&gt;</div>
+            <div class="ind-7">
+              &lt;span class="fontawesome-icon-inline"&gt;
+            </div>
+            <div class="ind-8">
+              &lt;span class="fa-sharp fa-regular fa-envelope fa-lg"&gt;
+            </div>
+            <div class="ind-8">&lt;/span&gt;</div>
+            <div class="ind-7">&lt;/span&gt;</div>
+            <div class="ind-6">&lt;/span&gt;</div>
+            <div class="ind-4">&lt;/a&gt;</div>
+            <div class="ind-3">&lt;/div&gt;</div></span
+          >
+          <div class="ind-2">&lt;/div&gt;</div>
+          <div class="ind-1">&lt;/td&gt;</div>
           &lt;/tr&gt;
         </code>
       </div>
@@ -428,6 +429,43 @@ function validateInputs(): boolean {
 </template>
 
 <style scoped>
+.ind-1 {
+  text-indent: 1rem;
+}
+
+.ind-2 {
+  text-indent: 2rem;
+}
+
+.ind-3 {
+  text-indent: 3rem;
+}
+
+.ind-4 {
+  text-indent: 4rem;
+}
+
+.ind-5 {
+  text-indent: 5rem;
+}
+
+.ind-6 {
+  text-indent: 6rem;
+}
+
+.ind-7 {
+  text-indent: 7rem;
+}
+
+.ind-8 {
+  text-indent: 8rem;
+}
+
+.input-text {
+  font-weight: 800;
+  color: #348eff;
+}
+
 .gui-container {
   display: grid;
   gap: 2.2rem;
@@ -488,7 +526,7 @@ function validateInputs(): boolean {
     }
 
     &:first-of-type {
-      min-width: 191px;
+      min-width: 207px;
     }
 
     &:nth-of-type(2) {
@@ -511,6 +549,9 @@ function validateInputs(): boolean {
     outline: none;
     &:focus-visible {
       border: solid 2px #9b9b9b;
+    }
+    &:disabled {
+      cursor: not-allowed;
     }
   }
 
@@ -544,8 +585,8 @@ function validateInputs(): boolean {
     background-color: #ff5640;
     color: #ffffff;
     border: solid 2px transparent;
-    border-radius: 50%;
-    padding: 0.15em 0.4em;
+    padding-right: 0.4em;
+    padding-left: 0.4em;
     font-size: 1.1rem;
     font-weight: 800;
     cursor: pointer;
@@ -560,6 +601,26 @@ function validateInputs(): boolean {
   }
 }
 
+.url-toggle-container {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  margin-top: 0.4rem;
+  :is(h4) {
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+  :is(input) {
+    margin: 0;
+    margin-left: 0.15rem;
+    transform: scale(1.3);
+  }
+}
+
+.disabled {
+  color: #b4b4b4;
+}
+
 section.preview {
   max-width: 860px;
 }
@@ -569,6 +630,7 @@ section.preview {
   padding: 0.5em;
   border-radius: 6px;
   box-shadow: 0px 0px 1.5px #cfcfcf;
+  margin-bottom: 1rem;
 }
 
 .visible {
