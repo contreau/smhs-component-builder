@@ -311,6 +311,9 @@ function validateInputs(): boolean {
           </tbody>
         </table>
       </div>
+      <p class="image-note" v-if="!htmlTabActive">
+        Image dimensions <strong>must be</strong> 200x245 at 72dpi.
+      </p>
 
       <!-- HTML Preview -->
       <div
@@ -459,6 +462,16 @@ function validateInputs(): boolean {
 
 .ind-8 {
   text-indent: 8rem;
+}
+
+.image-note {
+  margin: 0;
+  padding: 0.3em 0.5em;
+  font-weight: 500;
+  max-width: fit-content;
+  background-color: #ffffff;
+  border-radius: 6px;
+  box-shadow: 0px 0px 1.5px #cfcfcf;
 }
 
 .input-text {
