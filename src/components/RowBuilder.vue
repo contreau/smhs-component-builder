@@ -5,12 +5,16 @@ const titleText = ref("");
 const nameText = ref("");
 const profileLink = ref("");
 const email = ref("");
+const bulletText = ref("");
 const remainingTitles = ref(4);
+const remainingBullets = ref(4);
 const copiedMessage = ref(false);
 const missingFieldMessage = ref(false);
 const disableURLs = ref(false);
+const enableBullets = ref(false);
 const store = reactive({
   titles: <string[]>[],
+  bullets: <string[]>[],
 });
 
 // TODO: consider adding toggle for direct email or email url (and find out how to hide the little envelope icon in smhs sites)
@@ -37,6 +41,18 @@ function createAdditionalTitles() {
 function deleteTitle(titleIndex: number) {
   store.titles.splice(titleIndex, 1);
   remainingTitles.value++;
+}
+
+function createBulletPoint() {
+  if (remainingBullets.value < 5 && remainingBullets.value > 0) {
+    store.bullets.push("");
+    remainingBullets.value--;
+  }
+}
+
+function deleteBulletPoint(bulletIndex: number) {
+  store.bullets.splice(bulletIndex, 1);
+  remainingBullets.value++;
 }
 
 async function copyHTML() {
@@ -67,9 +83,18 @@ function clearFields() {
   nameText.value = "";
   profileLink.value = "";
   email.value = "";
+  bulletText.value = "";
   remainingTitles.value = 4;
+  remainingBullets.value = 4;
   store.titles = [];
+  store.bullets = [];
+  enableBullets.value = false;
   disableURLs.value = false;
+}
+
+function clearURLs() {
+  profileLink.value = "";
+  email.value = "";
 }
 
 function trimInput(event: Event, state: string) {
@@ -78,6 +103,7 @@ function trimInput(event: Event, state: string) {
     titleText: titleText,
     profileLink: profileLink,
     email: email,
+    bulletText: bulletText,
   };
   setTimeout(() => {
     const target = event.target as HTMLInputElement;
@@ -89,6 +115,13 @@ function trimTitlesInput(event: Event, index: number) {
   const target = event.target as HTMLInputElement;
   setTimeout(() => {
     store.titles[index] = target.value.trim();
+  }, 0);
+}
+
+function trimBulletsInput(event: Event, index: number) {
+  const target = event.target as HTMLInputElement;
+  setTimeout(() => {
+    store.bullets[index] = target.value.trim();
   }, 0);
 }
 
@@ -179,15 +212,58 @@ function validateInputs(): boolean {
           class="btn-addTitle"
           @click="createAdditionalTitles"
         >
-          <i class="fa-solid fa-plus"></i> Add Title (
+          <i class="fa-solid fa-scroll"></i>&nbsp; Add Title (
           {{ remainingTitles }} remaining )
         </button>
+
+        <div class="url-toggle-container">
+          <input id="checkbox" type="checkbox" v-model="enableBullets" />
+          <h4>
+            <label for="checkbox">Add Bulleted Information (Optional) </label>
+          </h4>
+        </div>
+
+        <!-- BULLETS -->
+
+        <div v-if="enableBullets" class="bullet-module">
+          <div class="form-item">
+            <h4>Bullet 1</h4>
+            <input
+              v-model="bulletText"
+              type="text"
+              @paste="trimInput($event, 'bulletText')"
+              placeholder="Edit Bullet"
+            />
+          </div>
+          <!-- Generated Bullet Input -->
+          <div v-for="(_, i) in store.bullets" class="form-item">
+            <h4>Bullet {{ i + 2 }}</h4>
+            <input
+              v-model="store.bullets[i]"
+              type="text"
+              @paste="trimBulletsInput($event, i)"
+              placeholder="Edit Bullet"
+            />
+            <button class="delete-button" @click="deleteBulletPoint(i)">
+              <i class="fa-solid fa-xmark"></i>
+            </button>
+          </div>
+          <button @click="createBulletPoint" v-if="remainingBullets > 0">
+            <span
+              style="color: #008bd0; font-size: 0.5rem; vertical-align: 2.2px"
+              ><i class="fa-solid fa-circle"></i></span
+            >&nbsp; Add Bullets ({{ remainingBullets }} remaining)
+          </button>
+        </div>
 
         <div class="url-toggle-container">
           <input id="checkbox" type="checkbox" v-model="disableURLs" />
           <h4>
             <label for="checkbox">Remove URLs from Row</label>
           </h4>
+          <button @click="clearURLs">
+            <i class="fa-solid fa-broom"></i>&nbsp;Clear URLs
+          </button>
         </div>
 
         <div class="form-item">
@@ -276,6 +352,11 @@ function validateInputs(): boolean {
                       {{ item }}
                     </span>
                   </p>
+
+                  <ul v-if="enableBullets">
+                    <li>{{ bulletText }}</li>
+                    <li v-for="bullet in store.bullets">{{ bullet }}</li>
+                  </ul>
 
                   <div class="faculty-icon--container">
                     <a
@@ -627,6 +708,9 @@ function validateInputs(): boolean {
     margin: 0;
     margin-left: 0.15rem;
     transform: scale(1.3);
+  }
+  :is(button) {
+    margin-left: 3.5rem;
   }
 }
 

@@ -1,3 +1,6 @@
+/* I saved the changes to be made in the sandbox:
+ https://sandbox.smhs.gwu.edu/css-updates-faculty-table-style
+  */
 *,
 *::after,
 *::before {
@@ -34,6 +37,11 @@ body {
 .highlighted-text {
   font-family: "Avenir Next LT W01 Demi", sans-serif;
   min-height: 34px;
+}
+
+/* proposed change: */
+.table-faculty tbody tr td div.faculty-info p.highlighted-text {
+  margin-bottom: 0;
 }
 
 p {
@@ -93,6 +101,27 @@ table {
   vertical-align: top;
 }
 
+.faculty-info ul {
+  padding-left: 1.5em;
+  margin-top: 0;
+  margin-bottom: 10px;
+  li::marker {
+    color: #008bd0;
+  }
+}
+
+/* Proposed addition to table CSS - more breathing room between rows */
+/* .table-faculty {
+  border-collapse: separate;
+  border-spacing: 0 2.8rem;
+  border-top: solid 5px #0a5b80;
+} */
+
+/* to be added to faculty table CSS */
+.table-faculty tbody tr td div.faculty-info ul {
+  padding-left: 1em;
+}
+
 .table-faculty tbody {
   border-top: solid 5px #0a5b80;
 }
@@ -120,7 +149,12 @@ table {
 }
 
 .table-faculty tbody tr td div.faculty-info div.faculty-icon--container {
-  display: inline;
+  /* proposed change: inline-block, margin-top/bottom, padding-top/bottom */
+  display: inline-block;
+  margin-top: 0.75rem;
+  margin-bottom: 0.75rem;
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
   margin-right: 0.5rem;
   :is(a) {
     text-decoration: none;
