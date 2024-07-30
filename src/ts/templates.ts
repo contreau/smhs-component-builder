@@ -1,5 +1,3 @@
-import { Ref } from "vue";
-
 export class facultyRow {
   html: string;
   titles: string;
@@ -8,10 +6,10 @@ export class facultyRow {
   profileLink: string;
   email: string;
   constructor(
-    nameText: Ref<string>,
-    titleText: Ref<string>,
-    profileLink: Ref<string>,
-    email: Ref<string>,
+    nameText: string,
+    titleText: string,
+    profileLink: string,
+    email: string,
     storedTitles: string[]
   ) {
     let titles = storedTitles.slice();
@@ -29,10 +27,10 @@ export class facultyRow {
     for (let title of titles) {
       titleString += title;
     }
-    this.nameText = nameText.value;
-    this.titleText = titleText.value;
-    this.profileLink = profileLink.value;
-    this.email = email.value;
+    this.nameText = nameText;
+    this.titleText = titleText;
+    this.profileLink = profileLink;
+    this.email = email;
     this.titles = titleString;
     this.html = `
       <tr>
@@ -95,11 +93,7 @@ export class facultyRowNoURL {
   titles: string;
   nameText: string;
   titleText: string;
-  constructor(
-    nameText: Ref<string>,
-    titleText: Ref<string>,
-    storedTitles: string[]
-  ) {
+  constructor(nameText: string, titleText: string, storedTitles: string[]) {
     let titles = storedTitles.slice();
     let titleString = "";
     if (titles.length >= 1) {
@@ -115,8 +109,8 @@ export class facultyRowNoURL {
     for (let title of titles) {
       titleString += title;
     }
-    this.nameText = nameText.value;
-    this.titleText = titleText.value;
+    this.nameText = nameText;
+    this.titleText = titleText;
     this.titles = titleString;
     this.html = `
         <tr>

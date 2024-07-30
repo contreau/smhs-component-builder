@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { ref, computed } from "vue";
-import Landing from "./components/Landing.vue";
-import RowBuilder from "./components/RowBuilder.vue";
-import AccoladesBuilder from "./components/AccoladesBuilder.vue";
+import Landing from "./routes/Landing.vue";
+import RowBuilder from "./FacultyRowBuilder/components/Input.vue";
+import AccoladesBuilder from "./routes/AccoladesBuilder.vue";
 
 const routes: Record<string, any> = {
   "/": Landing,
@@ -33,7 +33,6 @@ const currentView = computed(() => {
       </ul>
     </div>
     <component :is="currentView"></component>
-    <!-- <RowBuilder /> -->
   </main>
 </template>
 
