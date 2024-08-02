@@ -56,33 +56,34 @@ function clearBullets() {
     </h4>
   </div>
 
-  <div v-if="store.enableBullets" class="bullet-module">
-    <div class="form-item">
-      <h4>Bullet 1</h4>
-      <input
-        v-model="store.bulletText"
-        type="text"
-        @paste="trimInput($event, 'bulletText')"
-        placeholder="Edit Bullet"
-      />
-    </div>
-    <!-- Generated Bullet Input -->
-    <div v-for="(_, i) in store.bullets" class="form-item">
-      <h4>Bullet {{ i + 2 }}</h4>
-      <input
-        v-model="store.bullets[i]"
-        type="text"
-        @paste="trimBulletsInput($event, i)"
-        placeholder="Edit Bullet"
-      />
-      <button class="delete-button" @click="deleteBulletPoint(i)">
-        <i class="fa-solid fa-xmark"></i>
-      </button>
-    </div>
-    <button @click="createBulletPoint" v-if="store.remainingBullets > 0">
-      <span style="color: #008bd0; font-size: 0.5rem; vertical-align: 2.2px"
-        ><i class="fa-solid fa-circle"></i></span
-      >&nbsp; Add Bullets ({{ store.remainingBullets }} remaining)
+  <div v-if="store.enableBullets" class="form-item">
+    <h4>Bullet 1</h4>
+    <input
+      v-model="store.bulletText"
+      type="text"
+      @paste="trimInput($event, 'bulletText')"
+      placeholder="Edit Bullet"
+    />
+  </div>
+  <!-- Generated Bullet Input -->
+  <div v-for="(_, i) in store.bullets" class="form-item">
+    <h4>Bullet {{ i + 2 }}</h4>
+    <input
+      v-model="store.bullets[i]"
+      type="text"
+      @paste="trimBulletsInput($event, i)"
+      placeholder="Edit Bullet"
+    />
+    <button class="delete-button" @click="deleteBulletPoint(i)">
+      <i class="fa-solid fa-xmark"></i>
     </button>
   </div>
+  <button
+    @click="createBulletPoint"
+    v-if="store.enableBullets && store.remainingBullets > 0"
+  >
+    <span style="color: #008bd0; font-size: 0.5rem; vertical-align: 2.2px"
+      ><i class="fa-solid fa-circle"></i></span
+    >&nbsp; Add Bullets ({{ store.remainingBullets }} remaining)
+  </button>
 </template>

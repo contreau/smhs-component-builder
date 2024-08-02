@@ -7,7 +7,7 @@ import Previews from "./Previews.vue";
 // TODO:
 // implement bulleted list into templates
 // add bullet list validation to the copy html action
-// consider adding toggle for direct email or email url (and find out how to hide the little envelope icon in smhs sites)
+// consider adding toggle for direct email or email url
 
 function clearFields() {
   store.titleText = "";
@@ -50,7 +50,7 @@ function trimInput(event: Event, state: string) {
       <h3>Edit Fields</h3>
       <div class="form">
         <button @click="clearFields">
-          <i class="fa-solid fa-broom"></i>&nbsp;Reset All Fields
+          <i class="fa-solid fa-broom"></i>&nbsp;Clear All Fields
         </button>
         <div class="form-item">
           <h4>Name</h4>
