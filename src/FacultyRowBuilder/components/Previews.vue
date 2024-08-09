@@ -69,9 +69,28 @@ async function copyHTML() {
 function validateInputs(): boolean {
   let states: string[] = [];
   if (store.disableURLs) {
-    states = [store.nameText, store.titleText];
+    if (store.enableBullets) {
+      states = [store.nameText, store.titleText, store.bulletText];
+    } else {
+      states = [store.nameText, store.titleText];
+    }
   } else if (!store.disableURLs) {
-    states = [store.nameText, store.titleText, store.profileLink, store.email];
+    if (store.enableBullets) {
+      states = [
+        store.nameText,
+        store.titleText,
+        store.profileLink,
+        store.email,
+        store.bulletText,
+      ];
+    } else {
+      states = [
+        store.nameText,
+        store.titleText,
+        store.profileLink,
+        store.email,
+      ];
+    }
   }
 
   let status = false;
