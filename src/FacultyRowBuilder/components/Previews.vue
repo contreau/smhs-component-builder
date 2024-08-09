@@ -2,6 +2,7 @@
 import { ref } from "vue";
 import { store } from "../store";
 import { facultyRow, facultyRowNoURL } from "../../ts/templates";
+import { bulletRow, bulletRowNoURL } from "../../ts/bulleted-templates";
 
 // css classes
 const htmlTabActive = ref(false);
@@ -18,15 +19,43 @@ async function copyHTML() {
   if (validateInputs()) {
     let row: any;
     if (store.disableURLs) {
-      row = new facultyRowNoURL(store.nameText, store.titleText, store.titles);
-    } else {
-      row = new facultyRow(
-        store.nameText,
-        store.titleText,
-        store.profileLink,
-        store.email,
-        store.titles
-      );
+      // if URLs are toggled off
+      if (store.enableBullets) {
+        row = new bulletRowNoURL(
+          store.nameText,
+          store.titleText,
+          store.bulletText,
+          store.titles,
+          store.bullets
+        );
+      } else {
+        row = new facultyRowNoURL(
+          store.nameText,
+          store.titleText,
+          store.titles
+        );
+      }
+    } else if (!store.disableURLs) {
+      // URLs are in use
+      if (store.enableBullets) {
+        row = new bulletRow(
+          store.nameText,
+          store.titleText,
+          store.bulletText,
+          store.profileLink,
+          store.email,
+          store.titles,
+          store.bullets
+        );
+      } else {
+        row = new facultyRow(
+          store.nameText,
+          store.titleText,
+          store.profileLink,
+          store.email,
+          store.titles
+        );
+      }
     }
 
     await navigator.clipboard.writeText(row.html);
