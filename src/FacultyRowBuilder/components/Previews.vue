@@ -195,6 +195,12 @@ function validateInputs(): boolean {
         <div>&lt;tr&gt;</div>
         <div class="ind-1">&lt;td&gt;</div>
         <div class="ind-2">&lt;div class="picture-frame"&gt;</div>
+        <span v-if="!store.disableURLs"
+          ><div class="ind-3">
+            &lt;a href="<span class="input-text">{{ store.profileLink }}</span
+            >" target="_blank"&gt;
+          </div></span
+        >
         <div class="ind-3">&lt;div class="field--type-image"&gt;</div>
         <div class="ind-4">
           &lt;img class="img-responsive" loading="lazy" src="/path/to/image"
@@ -205,6 +211,7 @@ function validateInputs(): boolean {
           <div class="in-4">/&gt;</div>
         </div>
         <div class="ind-3">&lt;/div&gt;</div>
+        <div v-if="!store.disableURLs" class="ind-3">&lt;/a&gt;</div>
         <div class="ind-2">&lt;/div&gt;</div>
         <div class="ind-1">&lt;/td&gt;</div>
         <div class="ind-1">&lt;td&gt;</div>
