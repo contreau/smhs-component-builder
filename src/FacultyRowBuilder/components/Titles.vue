@@ -2,12 +2,6 @@
 import { store } from "../store";
 import { nextTick } from "vue";
 
-let lastFocusedInput: HTMLInputElement;
-function saveFocusedInput(event: Event) {
-  lastFocusedInput = event?.target as HTMLInputElement;
-  console.log(lastFocusedInput);
-}
-
 function createAdditionalTitles() {
   if (store.remainingTitles < 5 && store.remainingTitles > 0) {
     store.titles.push("");
@@ -45,20 +39,16 @@ function trimTitlesInput(event: Event, index: number) {
 function deleteTitle(titleIndex: number) {
   store.titles.splice(titleIndex, 1);
   store.remainingTitles++;
-  console.log(document.activeElement);
   nextTick(() => {
     const titleInputs: HTMLInputElement[] = Array.from(
       document.querySelectorAll('input[placeholder="Edit Title"]')
     );
-    for (let i = 0; i < titleInputs.length; i++) {
-      if (titleInputs[i] === lastFocusedInput) {
-        titleInputs[i].focus();
-        break;
-      }
+    if (titleInputs.length > titleIndex + 1) {
+      titleInputs[titleIndex + 1].focus();
+    } else {
+      titleInputs.at(-1)?.focus();
     }
   });
-
-  // TODO: add focus step for when last item is deleted - currently does not focus when this happens
 }
 </script>
 
@@ -69,8 +59,8 @@ function deleteTitle(titleIndex: number) {
       v-model="store.titleText"
       type="text"
       @paste="trimInput($event, 'titleText')"
-      @focus="saveFocusedInput($event)"
       placeholder="Edit Title"
+      @keyup.enter="createAdditionalTitles"
     />
   </div>
 
@@ -81,8 +71,9 @@ function deleteTitle(titleIndex: number) {
       v-model="store.titles[i]"
       type="text"
       @paste="trimTitlesInput($event, i)"
-      @focus="saveFocusedInput($event)"
       placeholder="Edit Title"
+      @keyup.shift.delete="deleteTitle(i)"
+      @keyup.enter="createAdditionalTitles"
     />
     <button class="delete-button" @click="deleteTitle(i)">
       <i class="fa-solid fa-xmark"></i>
