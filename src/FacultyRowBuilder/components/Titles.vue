@@ -54,7 +54,12 @@ function deleteTitle(titleIndex: number) {
 
 <template>
   <div class="form-item">
-    <h4>Title</h4>
+    <h4>Titles ({{ store.remainingTitles }} more remaining)</h4>
+    <p class="shortcut-info">
+      <span class="key">Enter</span> creates new titles.
+      <span class="key">Shift + Backspace</span>
+      deletes them.
+    </p>
     <input
       v-model="store.titleText"
       type="text"
@@ -67,25 +72,35 @@ function deleteTitle(titleIndex: number) {
   <!-- Generated Title Input -->
   <div v-for="(_, i) in store.titles" class="form-item">
     <h4>Title {{ i + 2 }}</h4>
-    <input
-      v-model="store.titles[i]"
-      type="text"
-      @paste="trimTitlesInput($event, i)"
-      placeholder="Edit Title"
-      @keyup.shift.delete="deleteTitle(i)"
-      @keyup.enter="createAdditionalTitles"
-    />
-    <button class="delete-button" @click="deleteTitle(i)">
-      <i class="fa-solid fa-xmark"></i>
-    </button>
+    <div class="flex-container">
+      <input
+        v-model="store.titles[i]"
+        type="text"
+        @paste="trimTitlesInput($event, i)"
+        placeholder="Edit Title"
+        @keyup.shift.delete="deleteTitle(i)"
+        @keyup.enter="createAdditionalTitles"
+      />
+      <button class="delete-button" @click="deleteTitle(i)">
+        <img src="/trash.svg" height="22" width="22" alt="Delete" />
+      </button>
+    </div>
   </div>
-
-  <button
-    v-if="store.remainingTitles > 0"
-    class="btn-addTitle"
-    @click="createAdditionalTitles"
-  >
-    <i class="fa-solid fa-scroll"></i>&nbsp; Add Title (
-    {{ store.remainingTitles }} remaining )
-  </button>
 </template>
+
+<style scoped>
+p.shortcut-info {
+  margin-top: 0;
+  font-size: 0.85rem;
+  br {
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+  span.key {
+    font-weight: 500;
+    background-color: #d2d2d369;
+    padding: 0.1em 0.25em 0.25em 0.25em;
+    border-radius: 5px;
+  }
+}
+</style>

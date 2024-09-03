@@ -5,9 +5,8 @@ import Bullets from "./Bullets.vue";
 import Previews from "./Previews.vue";
 
 // TODO:
-// implement bulleted list into templates
-// add bullet list validation to the copy html action
-// consider adding toggle for direct email or email url
+// Add either a toggle or string parser for email input to treat mailto and https urls differently
+// Add toggle to disable just email or just profile urls
 
 function clearFields() {
   store.titleText = "";
@@ -165,6 +164,11 @@ function trimInput(event: Event, state: string) {
   }
 }
 
+div.flex-container {
+  display: flex;
+  align-items: center;
+}
+
 .form-item {
   :is(h4) {
     margin-top: 0rem;
@@ -181,8 +185,7 @@ function trimInput(event: Event, state: string) {
     border: solid 2px transparent;
     padding-right: 0.4em;
     padding-left: 0.4em;
-    font-size: 1.1rem;
-    font-weight: 800;
+    max-height: 33px;
     cursor: pointer;
     outline: none;
     transition: background-color 0.3s;
