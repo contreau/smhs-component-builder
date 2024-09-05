@@ -159,7 +159,7 @@ function validateInputs(): boolean {
                   <img
                     class="img-responsive"
                     loading="lazy"
-                    src="https://smhs.gwu.edu/sites/g/files/zaskib1151/files/styles/1920_x_variable/public/2024-04/avatar-headshot--200x245.jpg?itok=_5durzkz"
+                    src="/avatar-headshot--200x245.jpg"
                     width="200"
                     height="245"
                     alt="Avatar wearing GW white coat"

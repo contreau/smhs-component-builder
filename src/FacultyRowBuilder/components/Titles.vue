@@ -102,11 +102,7 @@ function deleteTitle(titleIndex: number) {
 p.shortcut-info {
   margin-top: 0;
   font-size: 0.85rem;
-  br {
-    margin-top: 0.5rem;
-    margin-bottom: 0.5rem;
-  }
-  span.key {
+  :is(span).key {
     font-weight: 500;
     background-color: #d2d2d369;
     padding: 0.1em 0.25em 0.25em 0.25em;
