@@ -3,6 +3,7 @@ import { store } from "../store";
 import Titles from "./Titles.vue";
 import Bullets from "./Bullets.vue";
 import Previews from "./Previews.vue";
+import broomSVG from "../../assets/broom-svg.vue";
 
 // TODO:
 // Add either a toggle or string parser for email input to treat mailto and https urls differently
@@ -50,8 +51,8 @@ function trimInput(event: Event, state: string) {
       <section class="form-container">
         <div class="form-top">
           <h3>Edit Fields</h3>
-          <button @click="clearFields">
-            <i class="fa-solid fa-broom"></i>&nbsp;Clear All Fields
+          <button class="clear-button" @click="clearFields">
+            <broomSVG />&nbsp;Clear All Fields
           </button>
         </div>
         <div class="form">
@@ -71,8 +72,8 @@ function trimInput(event: Event, state: string) {
             <h4>
               <label for="checkbox">Remove URLs from Row</label>
             </h4>
-            <button @click="clearURLs">
-              <i class="fa-solid fa-broom"></i>&nbsp;Clear URLs
+            <button class="clear-button" @click="clearURLs">
+              <broomSVG />&nbsp;Clear URLs
             </button>
           </div>
           <div class="form-item">
@@ -111,7 +112,7 @@ function trimInput(event: Event, state: string) {
   margin-top: 2rem;
   display: grid;
   gap: 2.2rem;
-  grid-template-columns: 35% 65%;
+  grid-template-columns: 39% 59%;
   position: relative;
 }
 
@@ -188,6 +189,12 @@ function trimInput(event: Event, state: string) {
     &:focus-visible {
       border: solid 2px #9b9b9b;
     }
+  }
+}
+
+button.clear-button {
+  svg {
+    vertical-align: -6px;
   }
 }
 

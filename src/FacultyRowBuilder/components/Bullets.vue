@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { store } from "../store";
+import trashSVG from "../../assets/trash-svg.vue";
 
 function trimInput(event: Event, state: string) {
   const refs: Record<string, string> = {
@@ -75,15 +76,16 @@ function clearBullets() {
       placeholder="Edit Bullet"
     />
     <button class="delete-button" @click="deleteBulletPoint(i)">
-      <i class="fa-solid fa-xmark"></i>
+      <trashSVG />
     </button>
   </div>
   <button
     @click="createBulletPoint"
     v-if="store.enableBullets && store.remainingBullets > 0"
   >
-    <span style="color: #008bd0; font-size: 0.5rem; vertical-align: 2.2px"
-      ><i class="fa-solid fa-circle"></i></span
+    <span
+      style="color: #008bd0; font-size: 0.5rem; vertical-align: 2.2px"
+    ></span
     >&nbsp; Add Bullets ({{ store.remainingBullets }} remaining)
   </button>
 </template>

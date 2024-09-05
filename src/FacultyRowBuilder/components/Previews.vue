@@ -3,6 +3,10 @@ import { ref } from "vue";
 import { store } from "../store";
 import { facultyRow, facultyRowNoURL } from "../../ts/templates";
 import { bulletRow, bulletRowNoURL } from "../../ts/bulleted-templates";
+import saveSVG from "../../assets/save-svg.vue";
+import codeSVG from "../../assets/code-svg.vue";
+import idCardSVG from "../../assets/id-card-svg.vue";
+import mailSVG from "../../assets/mail-svg.vue";
 
 // css classes
 const htmlTabActive = ref(false);
@@ -129,14 +133,12 @@ function validateInputs(): boolean {
     <div class="tabs">
       <h3 @click="toggleTabs">
         <span v-if="!htmlTabActive"
-          ><i class="fa-solid fa-code"></i>&nbsp;&nbsp;Preview HTML &nbsp;</span
+          ><codeSVG />&nbsp;&nbsp;Preview HTML &nbsp;</span
         >
         <span v-else><i class="fa-solid fa-eye"></i>&nbsp; Preview UI </span>
       </h3>
       <h3 @click="copyHTML">
-        <span v-if="!store.copiedMessage"
-          ><i class="fa-regular fa-floppy-disk"></i>&nbsp; Copy HTML</span
-        >
+        <span v-if="!store.copiedMessage"><saveSVG />&nbsp; Copy HTML</span>
         <span v-else>Copied!</span>
       </h3>
       <p :class="{ missingFields: store.missingFieldMessage }">
@@ -200,12 +202,7 @@ function validateInputs(): boolean {
                     aria-label="View faculty profile"
                     role="button"
                     v-if="!store.disableURLs"
-                    ><span class="faculty-icon--color"
-                      ><span class="fontawesome-icon-inline"
-                        ><span
-                          class="fa-sharp fa-regular fa-address-card fa-lg"
-                        >
-                        </span> </span></span
+                    ><span class="faculty-icon--color"><idCardSVG /></span
                   ></a>
                 </div>
                 <div class="faculty-icon--container">
@@ -215,10 +212,7 @@ function validateInputs(): boolean {
                     aria-label="Send email"
                     role="button"
                     v-if="!store.disableURLs"
-                    ><span class="faculty-icon--color"
-                      ><span class="fontawesome-icon-inline"
-                        ><span class="fa-sharp fa-regular fa-envelope fa-lg">
-                        </span> </span></span
+                    ><span class="faculty-icon--color"><mailSVG /></span
                   ></a>
                 </div>
               </div>
@@ -460,11 +454,11 @@ section.preview {
     transition: 0.3s all;
     font-weight: 400;
     text-align: center;
-    border: solid 1.5px #e2e2e6;
+    border: solid 1.5px #e9e9eb;
     border-radius: 6px;
     transition: 0.3s all;
     &:hover {
-      background-color: #e4e4e768;
+      background-color: #d6d6d6;
     }
 
     &:first-of-type {
@@ -474,6 +468,16 @@ section.preview {
     &:nth-of-type(2) {
       min-width: 151px;
     }
+
+    svg {
+      vertical-align: -5px;
+    }
+  }
+}
+
+.faculty-icon--color {
+  svg {
+    vertical-align: -7px;
   }
 }
 </style>
