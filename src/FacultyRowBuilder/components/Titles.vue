@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { store } from "../store";
 import { nextTick } from "vue";
+import trashSVG from "../../assets/trash-svg.vue";
 
 function createAdditionalTitles() {
   if (store.remainingTitles < 5 && store.remainingTitles > 0) {
@@ -54,7 +55,12 @@ function deleteTitle(titleIndex: number) {
 
 <template>
   <div class="form-item">
-    <h4>Titles ({{ store.remainingTitles }} more remaining)</h4>
+    <h4>
+      Titles
+      <span style="font-weight: 450"
+        >({{ store.remainingTitles }} more remaining)</span
+      >
+    </h4>
     <p class="shortcut-info">
       <span class="key">Enter</span> creates new titles.
       <span class="key">Shift + Backspace</span>
@@ -81,8 +87,12 @@ function deleteTitle(titleIndex: number) {
         @keyup.shift.delete="deleteTitle(i)"
         @keyup.enter="createAdditionalTitles"
       />
-      <button class="delete-button" @click="deleteTitle(i)">
-        <img src="/trash.svg" height="22" width="22" alt="Delete" />
+      <button
+        class="delete-button"
+        aria-label="Delete Title"
+        @click="deleteTitle(i)"
+      >
+        <trashSVG />
       </button>
     </div>
   </div>

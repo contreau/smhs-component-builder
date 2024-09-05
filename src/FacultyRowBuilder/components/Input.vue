@@ -7,6 +7,8 @@ import Previews from "./Previews.vue";
 // TODO:
 // Add either a toggle or string parser for email input to treat mailto and https urls differently
 // Add toggle to disable just email or just profile urls
+// Add up/down arrow key control to jump from title to title
+// Restyle + make bulleted input have same key controls as titles
 
 function clearFields() {
   store.titleText = "";
@@ -43,68 +45,70 @@ function trimInput(event: Event, state: string) {
 </script>
 
 <template>
-  <h2>Faculty Table Rows</h2>
-  <div class="gui-container">
-    <section class="form-container">
-      <h3>Edit Fields</h3>
-      <div class="form">
-        <button @click="clearFields">
-          <i class="fa-solid fa-broom"></i>&nbsp;Clear All Fields
-        </button>
-        <div class="form-item">
-          <h4>Name</h4>
-          <input
-            v-model="store.nameText"
-            type="text"
-            @paste="trimInput($event, 'nameText')"
-            placeholder="Edit Name"
-          />
-        </div>
-
-        <Titles />
-
-        <Bullets />
-
-        <div class="checkbox-container">
-          <input id="checkbox" type="checkbox" v-model="store.disableURLs" />
-          <h4>
-            <label for="checkbox">Remove URLs from Row</label>
-          </h4>
-          <button @click="clearURLs">
-            <i class="fa-solid fa-broom"></i>&nbsp;Clear URLs
+  <section class="component-wrapper">
+    <div class="gui-container">
+      <section class="form-container">
+        <div class="form-top">
+          <h3>Edit Fields</h3>
+          <button @click="clearFields">
+            <i class="fa-solid fa-broom"></i>&nbsp;Clear All Fields
           </button>
         </div>
-
-        <div class="form-item">
-          <h4 :class="{ disabled: store.disableURLs }">Profile URL</h4>
-          <input
-            v-model="store.profileLink"
-            type="text"
-            :disabled="store.disableURLs"
-            @paste="trimInput($event, 'profileLink')"
-            placeholder="Profile URL"
-          />
+        <div class="form">
+          <div class="form-item">
+            <h4>Name</h4>
+            <input
+              v-model="store.nameText"
+              type="text"
+              @paste="trimInput($event, 'nameText')"
+              placeholder="Edit Name"
+            />
+          </div>
+          <Titles />
+          <Bullets />
+          <div class="checkbox-container">
+            <input id="checkbox" type="checkbox" v-model="store.disableURLs" />
+            <h4>
+              <label for="checkbox">Remove URLs from Row</label>
+            </h4>
+            <button @click="clearURLs">
+              <i class="fa-solid fa-broom"></i>&nbsp;Clear URLs
+            </button>
+          </div>
+          <div class="form-item">
+            <h4 :class="{ disabled: store.disableURLs }">Profile URL</h4>
+            <input
+              v-model="store.profileLink"
+              type="text"
+              :disabled="store.disableURLs"
+              @paste="trimInput($event, 'profileLink')"
+              placeholder="Profile URL"
+            />
+          </div>
+          <div class="form-item">
+            <h4 :class="{ disabled: store.disableURLs }">Email URL</h4>
+            <input
+              v-model="store.email"
+              type="text"
+              :disabled="store.disableURLs"
+              @paste="trimInput($event, 'email')"
+              placeholder="Email URL"
+            />
+          </div>
         </div>
-
-        <div class="form-item">
-          <h4 :class="{ disabled: store.disableURLs }">Email URL</h4>
-          <input
-            v-model="store.email"
-            type="text"
-            :disabled="store.disableURLs"
-            @paste="trimInput($event, 'email')"
-            placeholder="Email URL"
-          />
-        </div>
-      </div>
-    </section>
-
-    <Previews />
-  </div>
+      </section>
+      <Previews />
+    </div>
+  </section>
 </template>
 
 <style>
+.component-wrapper {
+  padding: 0 1.5em;
+}
+
 .gui-container {
+  margin-top: 2rem;
   display: grid;
   gap: 2.2rem;
   grid-template-columns: 35% 65%;
@@ -122,9 +126,32 @@ function trimInput(event: Event, state: string) {
   padding-bottom: 1em;
   background-color: #ffffff;
   overflow-y: hidden;
+}
+
+.form-top {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  justify-content: space-between;
 
   :is(h3):first-of-type {
     margin-top: 0;
+    margin-bottom: 0;
+  }
+
+  :is(button) {
+    max-width: fit-content;
+    font-size: 1rem;
+    padding: 0.2em;
+    border: solid 2px #e4e4e7;
+    border-radius: 6px;
+    outline: none;
+    cursor: pointer;
+    background-color: #e4e4e768;
+    transition: background-color 0.3s;
+    &:focus-visible {
+      border: solid 2px #9b9b9b;
+    }
   }
 }
 

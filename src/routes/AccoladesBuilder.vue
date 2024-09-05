@@ -1,8 +1,14 @@
 <script setup lang="ts"></script>
 
 <template>
-  <h2>OPRL Accolades</h2>
-  <p>Coming soon.</p>
+  <section class="component-wrapper">
+    <h2>OPRL Accolades</h2>
+    <p>Coming soon.</p>
+  </section>
 </template>
 
-<style scoped></style>
+<style scoped>
+.component-wrapper {
+  padding: 0 1.5em;
+}
+</style>

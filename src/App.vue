@@ -1,36 +1,29 @@
 <script setup lang="ts">
 import { ref, computed } from "vue";
-import Landing from "./routes/Landing.vue";
 import RowBuilder from "./FacultyRowBuilder/components/Input.vue";
 import AccoladesBuilder from "./routes/AccoladesBuilder.vue";
+import gearSVG from "./assets/gear-svg.vue";
 
-const routes: Record<string, any> = {
-  "/": Landing,
-  "/row-builder": RowBuilder,
-  "/accolades": AccoladesBuilder,
+const selectedTool = ref<string>("faculty-rows");
+const tools: Record<string, any> = {
+  "faculty-rows": RowBuilder,
+  oprl: AccoladesBuilder,
 };
 
-const currentPath = ref(window.location.hash);
-
-window.addEventListener("hashchange", () => {
-  currentPath.value = window.location.hash;
-});
-
 const currentView = computed(() => {
-  return routes[currentPath.value.slice(1) || "/"];
+  return tools[selectedTool.value];
 });
 </script>
 
 <template>
   <main>
     <div class="masthead">
-      <img src="/gear.svg" alt="Blue Gear" />
-      <h1>SMHS Component Builder</h1>
-      <ul>
-        <li><a href="#/">About</a></li>
-        <li><a href="#/row-builder">Faculty Table Rows</a></li>
-        <li><a href="#/accolades">OPRL Accolades</a></li>
-      </ul>
+      <gearSVG />
+      <h1>Web Component Builder - SMHS</h1>
+      <select v-model="selectedTool" name="Tool Selection" id="tool-select">
+        <option value="faculty-rows">Faculty Row Builder</option>
+        <option value="oprl">OPRL Accolades Builder</option>
+      </select>
     </div>
     <component :is="currentView"></component>
   </main>
@@ -54,6 +47,14 @@ html {
   background-color: #f1f1f1;
 }
 
+body {
+  background-image: url(./assets/plus.svg);
+  background-color: #ecebeb;
+  background-repeat: space;
+  background-size: 15px;
+  min-height: 100vh;
+}
+
 img {
   max-width: 100%;
   height: auto;
@@ -66,40 +67,31 @@ h2 {
 .masthead {
   display: flex;
   align-items: center;
+  background-color: #f1f1f1;
+  box-shadow: rgba(33, 35, 38, 0.43) 0px 10px 10px -10px;
+  padding: 0 1.5em;
 
   :is(h1) {
     color: var(--gw);
+    font-weight: 500;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
   }
 
-  :is(img) {
+  :is(svg) {
     margin-right: 0.5rem;
     animation: rotate 10s linear infinite;
   }
 
-  :is(ul) {
-    padding-left: 0;
-    margin-left: 5rem;
-    display: flex;
-    gap: 6.5rem;
-    list-style-type: none;
-
-    :is(li) {
-      font-size: 1.4rem;
-      font-weight: 500;
-    }
-
-    :is(a) {
-      text-decoration: none;
-      color: var(--gw);
-      &:hover,
-      &:focus {
-        border: none;
-      }
-    }
+  :is(select) {
+    margin-left: 4rem;
+    font-weight: 450;
+    font-size: 1.25rem;
+    border: transparent;
+    border-radius: 6px;
+    box-shadow: 0px 0px 1.5px #989898;
+    padding: 0.15em 0.4em;
   }
-}
-main {
-  padding: 0 1.5em;
 }
 
 @keyframes rotate {
