@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { store } from "../store";
-import { nextTick } from "vue";
+import { nextTick, ref } from "vue";
 import trashSVG from "../../assets/trash-svg.vue";
 
 function createAdditionalTitles() {
@@ -51,6 +51,30 @@ function deleteTitle(titleIndex: number) {
     }
   });
 }
+
+const currentFocusedInput = ref<number>(0);
+
+function updateCurrentFocusedInput(index: number) {
+  currentFocusedInput.value = index;
+}
+
+function navigateBetweenTitles(event: KeyboardEvent) {
+  const titleInputs: HTMLInputElement[] = Array.from(
+    document.querySelectorAll('input[placeholder="Edit Title"]')
+  );
+  if (event.key === "ArrowDown") {
+    if (
+      currentFocusedInput.value >= 0 &&
+      currentFocusedInput.value !== titleInputs.length - 1
+    ) {
+      titleInputs[currentFocusedInput.value + 1].focus();
+    }
+  } else if (event.key === "ArrowUp") {
+    if (currentFocusedInput.value > 0) {
+      titleInputs[currentFocusedInput.value - 1].focus();
+    }
+  }
+}
 </script>
 
 <template>
@@ -64,7 +88,7 @@ function deleteTitle(titleIndex: number) {
     <p class="shortcut-info">
       <span class="key">Enter</span> creates new titles.
       <span class="key">Shift + Backspace</span>
-      deletes them.
+      deletes them. <span class="key">&uarr;&darr;</span> navigates.
     </p>
     <input
       v-model="store.titleText"
@@ -72,6 +96,8 @@ function deleteTitle(titleIndex: number) {
       @paste="trimInput($event, 'titleText')"
       placeholder="Edit Title"
       @keyup.enter="createAdditionalTitles"
+      @keyup="navigateBetweenTitles($event)"
+      @focus="updateCurrentFocusedInput(0)"
     />
   </div>
 
@@ -86,6 +112,8 @@ function deleteTitle(titleIndex: number) {
         placeholder="Edit Title"
         @keyup.shift.delete="deleteTitle(i)"
         @keyup.enter="createAdditionalTitles"
+        @keyup="navigateBetweenTitles($event)"
+        @focus="updateCurrentFocusedInput(i + 1)"
       />
       <button
         class="delete-button"
