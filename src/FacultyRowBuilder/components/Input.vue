@@ -8,7 +8,6 @@ import broomSVG from "../../assets/broom-svg.vue";
 // TODO:
 // Add either a toggle or string parser for email input to treat mailto and https urls differently
 // Add toggle to disable just email or just profile urls
-// Add up/down arrow key control to jump from title to title
 // Restyle + make bulleted input have same key controls as titles
 
 function clearFields() {
@@ -67,13 +66,19 @@ function trimInput(event: Event, state: string) {
           </div>
           <Titles />
           <Bullets />
-          <div class="checkbox-container">
-            <input id="checkbox" type="checkbox" v-model="store.disableURLs" />
-            <h4>
-              <label for="checkbox">Remove URLs from Row</label>
-            </h4>
+          <div class="checkbox-container url-checkboxes">
+            <div>
+              <input
+                id="checkbox"
+                type="checkbox"
+                v-model="store.disableURLs"
+              />
+              <h4>
+                <label for="checkbox">Remove URLs from Row</label>
+              </h4>
+            </div>
             <button class="clear-button" @click="clearURLs">
-              <broomSVG />&nbsp;Clear URLs
+              <broomSVG />&nbsp;Clear URL Fields
             </button>
           </div>
           <div class="form-item">
@@ -193,6 +198,15 @@ function trimInput(event: Event, state: string) {
 }
 
 button.clear-button {
+  background-color: #ff5640;
+  color: #ffffff;
+  border: solid 2px transparent;
+  &:hover {
+    background-color: #d73d29;
+  }
+  &:focus-visible {
+    border: solid 2px #8d2618;
+  }
   svg {
     vertical-align: -6px;
   }
@@ -248,6 +262,14 @@ div.flex-container {
   }
   :is(button) {
     margin-left: 3.5rem;
+  }
+}
+
+.url-checkboxes {
+  justify-content: space-between;
+  div {
+    display: flex;
+    gap: 0.5rem;
   }
 }
 
