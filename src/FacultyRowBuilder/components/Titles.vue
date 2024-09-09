@@ -16,27 +16,6 @@ function createAdditionalTitles() {
   }
 }
 
-function trimInput(event: Event, state: string) {
-  const refs: Record<string, string> = {
-    nameText: store.nameText,
-    titleText: store.titleText,
-    profileLink: store.profileLink,
-    email: store.email,
-    bulletText: store.bulletText,
-  };
-  setTimeout(() => {
-    const target = event.target as HTMLInputElement;
-    refs[state] = target.value.trim();
-  }, 0);
-}
-
-function trimTitlesInput(event: Event, index: number) {
-  const target = event.target as HTMLInputElement;
-  setTimeout(() => {
-    store.titles[index] = target.value.trim();
-  }, 0);
-}
-
 function deleteTitle(titleIndex: number) {
   store.titles.splice(titleIndex, 1);
   store.remainingTitles++;
@@ -91,9 +70,8 @@ function navigateBetweenTitles(event: KeyboardEvent) {
       deletes them. <span class="key">&uarr;&darr;</span> navigates.
     </p>
     <input
-      v-model="store.titleText"
+      v-model.trim="store.titleText"
       type="text"
-      @paste="trimInput($event, 'titleText')"
       placeholder="Edit Title"
       @keyup.enter="createAdditionalTitles"
       @keyup="navigateBetweenTitles($event)"
@@ -106,9 +84,8 @@ function navigateBetweenTitles(event: KeyboardEvent) {
     <h4>Title {{ i + 2 }}</h4>
     <div class="flex-container">
       <input
-        v-model="store.titles[i]"
+        v-model.trim="store.titles[i]"
         type="text"
-        @paste="trimTitlesInput($event, i)"
         placeholder="Edit Title"
         @keyup.shift.delete="deleteTitle(i)"
         @keyup.enter="createAdditionalTitles"

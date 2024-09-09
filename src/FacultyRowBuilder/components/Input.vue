@@ -7,10 +7,10 @@ import Previews from "./Previews.vue";
 import broomSVG from "../../assets/broom-svg.vue";
 
 // TODO:
-// Add either a toggle or string parser for email input to treat mailto and https urls differently
+// Remove 'Clear URL Fields' button and put a 'Clear Input' button (maybe just use broom icon) next to each URL input
 // Add toggle to disable just email or just profile urls
 // Restyle + make bulleted input have same key controls as titles
-// Fix trimInput function
+// ... that should be it for core functionality, then just style adjustments - like subtle section differentiation in the input box
 
 function clearFields() {
   store.titleText = "";
@@ -31,21 +31,6 @@ function clearURLs() {
   store.email = "";
 }
 
-function trimInput(event: Event, state: string) {
-  const refs: Record<string, string> = {
-    nameText: store.nameText,
-    titleText: store.titleText,
-    profileLink: store.profileLink,
-    bulletText: store.bulletText,
-  };
-  setTimeout(() => {
-    const target = event.target as HTMLInputElement;
-    refs[state] = target.value.trim();
-  }, 0);
-}
-
-function formatProfileURL(event: Event) {}
-
 function isValidURL(url: string): boolean {
   const validProtocols = ["http:", "https:", "mailto:"];
   try {
@@ -54,6 +39,22 @@ function isValidURL(url: string): boolean {
   } catch {
     return false;
   }
+}
+
+function formatProfileURL(event: Event) {
+  const target = event.target as HTMLInputElement;
+  nextTick(() => {
+    const inputValue = target.value.trim();
+    if (isValidURL(inputValue)) {
+      store.profileLink = inputValue;
+      store.invalidProfileURLMessage = false;
+    } else if (inputValue === "") {
+      store.profileLink = inputValue;
+      store.invalidProfileURLMessage = false;
+    } else {
+      store.invalidProfileURLMessage = true;
+    }
+  });
 }
 
 function formatEmail(event: Event) {
@@ -69,7 +70,6 @@ function formatEmail(event: Event) {
     } else if (inputValue.includes("@")) {
       store.email = "mailto:" + inputValue;
     } else {
-      console.error("Invalid URL.");
       store.invalidEmailMessage = true;
     }
   });
@@ -90,9 +90,8 @@ function formatEmail(event: Event) {
           <div class="form-item">
             <h4>Name</h4>
             <input
-              v-model="store.nameText"
+              v-model.trim="store.nameText"
               type="text"
-              @paste="trimInput($event, 'nameText')"
               placeholder="Edit Name"
             />
           </div>
@@ -116,12 +115,18 @@ function formatEmail(event: Event) {
           <div class="form-item">
             <h4 class="url-item" :class="{ disabled: store.disableURLs }">
               Profile URL
+              <span
+                class="invalid-url-message"
+                :class="{ fadeIn: store.invalidProfileURLMessage }"
+                >Invalid URL.</span
+              >
             </h4>
             <input
-              v-model="store.profileLink"
+              v-model.trim="store.profileLink"
               type="text"
               :disabled="store.disableURLs"
-              @paste="trimInput($event, 'profileLink')"
+              @paste="formatProfileURL($event)"
+              @keyup="formatProfileURL($event)"
               placeholder="Profile URL"
             />
           </div>
@@ -135,7 +140,7 @@ function formatEmail(event: Event) {
               >
             </h4>
             <input
-              v-model="store.email"
+              v-model.trim="store.email"
               type="text"
               :disabled="store.disableURLs"
               @paste="formatEmail($event)"
@@ -330,7 +335,7 @@ div.flex-container {
   background-color: #ff5640;
   padding: 0.1em;
   font-weight: 400;
-  padding: 0.3em 0.4em;
+  padding: 0.1em 0.4em;
   border-radius: 6px;
   margin-left: 3rem;
   opacity: 0;

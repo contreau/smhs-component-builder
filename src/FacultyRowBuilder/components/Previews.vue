@@ -97,11 +97,32 @@ function validateInputs(): boolean {
     }
   }
 
-  let status = false;
-  if (store.titles.length > 0) {
-    // check extra titles
-    for (let title of store.titles) {
-      if (title !== "") {
+  if (store.invalidEmailMessage || store.invalidProfileURLMessage) {
+    store.missingFieldMessage = true;
+    setTimeout(() => {
+      store.missingFieldMessage = false;
+    }, 1200);
+    return false;
+  } else {
+    // normal checking of fields - above block exits early if either of the url inputs are invalid
+    let status = false;
+    if (store.titles.length > 0) {
+      // check extra titles
+      for (let title of store.titles) {
+        if (title !== "") {
+          status = true;
+        } else {
+          store.missingFieldMessage = true;
+          setTimeout(() => {
+            store.missingFieldMessage = false;
+          }, 1200);
+          return false;
+        }
+      }
+    }
+    // check all default inputs
+    for (let state of states) {
+      if (state !== "") {
         status = true;
       } else {
         store.missingFieldMessage = true;
@@ -111,20 +132,8 @@ function validateInputs(): boolean {
         return false;
       }
     }
+    return true ? status : false;
   }
-  // check all default inputs
-  for (let state of states) {
-    if (state !== "") {
-      status = true;
-    } else {
-      store.missingFieldMessage = true;
-      setTimeout(() => {
-        store.missingFieldMessage = false;
-      }, 1200);
-      return false;
-    }
-  }
-  return true ? status : false;
 }
 </script>
 
