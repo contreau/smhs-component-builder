@@ -12,6 +12,7 @@ export const store = reactive({
   remainingBullets: 4,
   copiedMessage: false,
   missingFieldMessage: false,
+  invalidEmailMessage: false,
   disableURLs: false,
   enableBullets: false,
 });

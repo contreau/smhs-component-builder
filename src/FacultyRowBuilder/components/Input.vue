@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { store } from "../store";
+import { nextTick } from "vue";
 import Titles from "./Titles.vue";
 import Bullets from "./Bullets.vue";
 import Previews from "./Previews.vue";
@@ -9,6 +10,7 @@ import broomSVG from "../../assets/broom-svg.vue";
 // Add either a toggle or string parser for email input to treat mailto and https urls differently
 // Add toggle to disable just email or just profile urls
 // Restyle + make bulleted input have same key controls as titles
+// Fix trimInput function
 
 function clearFields() {
   store.titleText = "";
@@ -34,13 +36,43 @@ function trimInput(event: Event, state: string) {
     nameText: store.nameText,
     titleText: store.titleText,
     profileLink: store.profileLink,
-    email: store.email,
     bulletText: store.bulletText,
   };
   setTimeout(() => {
     const target = event.target as HTMLInputElement;
     refs[state] = target.value.trim();
   }, 0);
+}
+
+function formatProfileURL(event: Event) {}
+
+function isValidURL(url: string): boolean {
+  const validProtocols = ["http:", "https:", "mailto:"];
+  try {
+    const parsedURL = new URL(url);
+    return validProtocols.includes(parsedURL.protocol);
+  } catch {
+    return false;
+  }
+}
+
+function formatEmail(event: Event) {
+  const target = event.target as HTMLInputElement;
+  nextTick(() => {
+    const inputValue = target.value.trim();
+    if (isValidURL(inputValue)) {
+      store.email = inputValue;
+      store.invalidEmailMessage = false;
+    } else if (inputValue === "") {
+      store.email = inputValue;
+      store.invalidEmailMessage = false;
+    } else if (inputValue.includes("@")) {
+      store.email = "mailto:" + inputValue;
+    } else {
+      console.error("Invalid URL.");
+      store.invalidEmailMessage = true;
+    }
+  });
 }
 </script>
 
@@ -82,7 +114,9 @@ function trimInput(event: Event, state: string) {
             </button>
           </div>
           <div class="form-item">
-            <h4 :class="{ disabled: store.disableURLs }">Profile URL</h4>
+            <h4 class="url-item" :class="{ disabled: store.disableURLs }">
+              Profile URL
+            </h4>
             <input
               v-model="store.profileLink"
               type="text"
@@ -92,12 +126,20 @@ function trimInput(event: Event, state: string) {
             />
           </div>
           <div class="form-item">
-            <h4 :class="{ disabled: store.disableURLs }">Email URL</h4>
+            <h4 class="url-item" :class="{ disabled: store.disableURLs }">
+              Email or Contact URL
+              <span
+                class="invalid-url-message"
+                :class="{ fadeIn: store.invalidEmailMessage }"
+                >Invalid URL.</span
+              >
+            </h4>
             <input
               v-model="store.email"
               type="text"
               :disabled="store.disableURLs"
-              @paste="trimInput($event, 'email')"
+              @paste="formatEmail($event)"
+              @keyup="formatEmail($event)"
               placeholder="Email URL"
             />
           </div>
@@ -198,14 +240,14 @@ function trimInput(event: Event, state: string) {
 }
 
 button.clear-button {
-  background-color: #ff5640;
+  background-color: #005fd7;
   color: #ffffff;
   border: solid 2px transparent;
   &:hover {
-    background-color: #d73d29;
+    background-color: #013c85;
   }
   &:focus-visible {
-    border: solid 2px #8d2618;
+    border: solid 2px #000000;
   }
   svg {
     vertical-align: -6px;
@@ -221,6 +263,12 @@ div.flex-container {
   :is(h4) {
     margin-top: 0rem;
     margin-bottom: 0.5rem;
+  }
+  :is(h4).url-item {
+    max-width: 400px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
   }
   :is(input) {
     width: 100%;
@@ -275,6 +323,23 @@ div.flex-container {
 
 .disabled {
   color: #b4b4b4;
+}
+
+.invalid-url-message {
+  color: #ffffff;
+  background-color: #ff5640;
+  padding: 0.1em;
+  font-weight: 400;
+  padding: 0.3em 0.4em;
+  border-radius: 6px;
+  margin-left: 3rem;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.fadeIn {
+  opacity: 1;
+  transition: opacity 0.3s;
 }
 
 @media (max-width: 1490px) {
