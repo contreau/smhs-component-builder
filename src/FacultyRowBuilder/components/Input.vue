@@ -5,9 +5,9 @@ import Titles from "./Titles.vue";
 import Bullets from "./Bullets.vue";
 import Previews from "./Previews.vue";
 import broomSVG from "../../assets/broom-svg.vue";
+import hideSVG from "../../assets/hide-svg.vue";
 
 // TODO:
-// Remove 'Clear URL Fields' button and put a 'Clear Input' button (maybe just use broom icon) next to each URL input
 // Add toggle to disable just email or just profile urls
 // Restyle + make bulleted input have same key controls as titles
 // ... that should be it for core functionality, then just style adjustments - like subtle section differentiation in the input box
@@ -26,9 +26,12 @@ function clearFields() {
   store.disableURLs = false;
 }
 
-function clearURLs() {
-  store.profileLink = "";
-  store.email = "";
+function clearURLs(urlType: string) {
+  if (urlType === "profile") {
+    store.profileLink = "";
+  } else if (urlType === "email") {
+    store.email = "";
+  }
 }
 
 function isValidURL(url: string): boolean {
@@ -108,9 +111,6 @@ function formatEmail(event: Event) {
                 <label for="checkbox">Remove URLs from Row</label>
               </h4>
             </div>
-            <button class="clear-button" @click="clearURLs">
-              <broomSVG />&nbsp;Clear URL Fields
-            </button>
           </div>
           <div class="form-item">
             <h4 class="url-item" :class="{ disabled: store.disableURLs }">
@@ -121,14 +121,18 @@ function formatEmail(event: Event) {
                 >Invalid URL.</span
               >
             </h4>
-            <input
-              v-model.trim="store.profileLink"
-              type="text"
-              :disabled="store.disableURLs"
-              @paste="formatProfileURL($event)"
-              @keyup="formatProfileURL($event)"
-              placeholder="Profile URL"
-            />
+            <div class="url-input-block">
+              <input
+                v-model.trim="store.profileLink"
+                type="text"
+                :disabled="store.disableURLs"
+                @paste="formatProfileURL($event)"
+                @keyup="formatProfileURL($event)"
+                placeholder="Profile URL"
+              />
+              <button @click="clearURLs('profile')"><broomSVG /></button>
+              <button><hideSVG /></button>
+            </div>
           </div>
           <div class="form-item">
             <h4 class="url-item" :class="{ disabled: store.disableURLs }">
@@ -139,14 +143,18 @@ function formatEmail(event: Event) {
                 >Invalid URL.</span
               >
             </h4>
-            <input
-              v-model.trim="store.email"
-              type="text"
-              :disabled="store.disableURLs"
-              @paste="formatEmail($event)"
-              @keyup="formatEmail($event)"
-              placeholder="Email URL"
-            />
+            <div class="url-input-block">
+              <input
+                v-model.trim="store.email"
+                type="text"
+                :disabled="store.disableURLs"
+                @paste="formatEmail($event)"
+                @keyup="formatEmail($event)"
+                placeholder="Email URL"
+              />
+              <button @click="clearURLs('email')"><broomSVG /></button>
+              <button><hideSVG /></button>
+            </div>
           </div>
         </div>
       </section>
@@ -240,6 +248,20 @@ function formatEmail(event: Event) {
     transition: background-color 0.3s;
     &:focus-visible {
       border: solid 2px #9b9b9b;
+    }
+  }
+
+  .url-input-block {
+    display: flex;
+    gap: 1rem;
+
+    button {
+      background-color: #005fd7;
+      padding: 0.2em 0.35em 0.05em 0.35em;
+      border: solid 2px transparent;
+      &:hover {
+        background-color: #013c85;
+      }
     }
   }
 }
