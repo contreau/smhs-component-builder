@@ -1,8 +1,18 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { store } from "../store";
-import { facultyRow, facultyRowNoURL } from "../../ts/templates";
-import { bulletRow, bulletRowNoURL } from "../../ts/bulleted-templates";
+import {
+  facultyRow,
+  facultyRowNoURL,
+  facultyRowProfileOnly,
+  facultyRowEmailOnly,
+} from "../../ts/templates";
+import {
+  bulletRow,
+  bulletRowNoURL,
+  bulletRowProfileOnly,
+  bulletRowEmailOnly,
+} from "../../ts/bulleted-templates";
 import saveSVG from "../../assets/save-svg.vue";
 import codeSVG from "../../assets/code-svg.vue";
 import idCardSVG from "../../assets/id-card-svg.vue";
@@ -22,8 +32,8 @@ function toggleTabs() {
 async function copyHTML() {
   if (validateInputs()) {
     let row: any;
-    if (store.disableURLs) {
-      // if URLs are toggled off
+    if (store.disableProfileURL && store.disableEmailURL) {
+      // if URLs are both toggled off
       if (store.enableBullets) {
         row = new bulletRowNoURL(
           store.nameText,
@@ -39,8 +49,45 @@ async function copyHTML() {
           store.titles
         );
       }
-    } else if (!store.disableURLs) {
-      // URLs are in use
+    } else if (store.disableProfileURL) {
+      // profile URL is disabled
+      if (store.enableBullets) {
+        row = new bulletRowEmailOnly(
+          store.nameText,
+          store.titleText,
+          store.bulletText,
+          store.email,
+          store.titles,
+          store.bullets
+        );
+      } else {
+        row = new facultyRowEmailOnly(
+          store.nameText,
+          store.titleText,
+          store.email,
+          store.titles
+        );
+      }
+    } else if (store.disableEmailURL) {
+      if (store.enableBullets) {
+        row = new bulletRowProfileOnly(
+          store.nameText,
+          store.titleText,
+          store.bulletText,
+          store.profileLink,
+          store.titles,
+          store.bullets
+        );
+      } else {
+        row = new facultyRowProfileOnly(
+          store.nameText,
+          store.titleText,
+          store.profileLink,
+          store.titles
+        );
+      }
+    } else if (!store.disableProfileURL && !store.disableEmailURL) {
+      // Both URLs are in use
       if (store.enableBullets) {
         row = new bulletRow(
           store.nameText,
@@ -72,13 +119,36 @@ async function copyHTML() {
 
 function validateInputs(): boolean {
   let states: string[] = [];
-  if (store.disableURLs) {
+  if (store.disableProfileURL) {
+    // profile is toggled off
+    if (store.enableBullets) {
+      states = [store.nameText, store.titleText, store.email, store.bulletText];
+    } else {
+      states = [store.nameText, store.titleText, store.email];
+    }
+  } else if (store.disableEmailURL) {
+    // email is toggled off
+    if (store.enableBullets) {
+      states = [
+        store.nameText,
+        store.titleText,
+        store.profileLink,
+        store.bulletText,
+      ];
+    } else {
+      states = [store.nameText, store.titleText, store.profileLink];
+    }
+  } else if (store.disableEmailURL && store.disableProfileURL) {
+    // both profile and email are toggled off
     if (store.enableBullets) {
       states = [store.nameText, store.titleText, store.bulletText];
     } else {
       states = [store.nameText, store.titleText];
     }
-  } else if (!store.disableURLs) {
+  }
+
+  // If NOTHING is disabled
+  else if (!store.disableProfileURL && !store.disableEmailURL) {
     if (store.enableBullets) {
       states = [
         store.nameText,
@@ -183,12 +253,14 @@ function validateInputs(): boolean {
               <div class="faculty-info">
                 <p class="mdbluetext">
                   <a
-                    v-if="!store.disableURLs"
+                    v-if="!store.disableProfileURL"
                     :href="store.profileLink"
                     target="_blank"
                     >{{ store.nameText }}</a
                   >
-                  <span v-if="store.disableURLs">{{ store.nameText }}</span>
+                  <span v-if="store.disableProfileURL">{{
+                    store.nameText
+                  }}</span>
                 </p>
                 <p class="highlighted-text">
                   {{ store.titleText }}
@@ -210,7 +282,7 @@ function validateInputs(): boolean {
                     target="_blank"
                     aria-label="View faculty profile"
                     role="button"
-                    v-if="!store.disableURLs"
+                    v-if="!store.disableProfileURL"
                     ><span class="faculty-icon--color"><idCardSVG /></span
                   ></a>
                 </div>
@@ -220,7 +292,7 @@ function validateInputs(): boolean {
                     target="_blank"
                     aria-label="Send email"
                     role="button"
-                    v-if="!store.disableURLs"
+                    v-if="!store.disableEmailURL"
                     ><span class="faculty-icon--color"><mailSVG /></span
                   ></a>
                 </div>
@@ -246,7 +318,7 @@ function validateInputs(): boolean {
         <div>&lt;tr&gt;</div>
         <div class="ind-1">&lt;td&gt;</div>
         <div class="ind-2">&lt;div class="picture-frame"&gt;</div>
-        <span v-if="!store.disableURLs"
+        <span v-if="!store.disableProfileURL"
           ><div class="ind-3">
             &lt;a href="<span class="input-text">{{ store.profileLink }}</span
             >" target="_blank"&gt;
@@ -259,17 +331,17 @@ function validateInputs(): boolean {
             width="200" height="245" alt="Avatar wearing GW white coat"
           </div>
           <div class="ind-5">typeof="foaf:Image"</div>
-          <div class="in-4">/&gt;</div>
+          <div class="ind-4">/&gt;</div>
         </div>
         <div class="ind-3">&lt;/div&gt;</div>
-        <div v-if="!store.disableURLs" class="ind-3">&lt;/a&gt;</div>
+        <div v-if="!store.disableProfileURL" class="ind-3">&lt;/a&gt;</div>
         <div class="ind-2">&lt;/div&gt;</div>
         <div class="ind-1">&lt;/td&gt;</div>
         <div class="ind-1">&lt;td&gt;</div>
         <div class="ind-2">&lt;div class="faculty-info"&gt;</div>
         <div class="ind-3">&lt;p class="mdbluetext"&gt;</div>
         <div class="ind-4">
-          <span v-if="!store.disableURLs"
+          <span v-if="!store.disableProfileURL"
             >&lt;a href="<span class="input-text">{{ store.profileLink }}</span
             >" target="_blank"&gt;<span class="input-text">{{
               store.nameText
@@ -278,7 +350,7 @@ function validateInputs(): boolean {
           >
         </div>
         <div class="ind-4">
-          <span v-if="store.disableURLs" class="input-text">{{
+          <span v-if="store.disableProfileURL" class="input-text">{{
             store.nameText
           }}</span>
         </div>
@@ -314,7 +386,7 @@ function validateInputs(): boolean {
         </span>
 
         <!-- URL Inputs -->
-        <span v-if="!store.disableURLs"
+        <span v-if="!store.disableProfileURL"
           ><div class="ind-3">&lt;div class="faculty-icon--container"&gt;</div>
           <div class="ind-4">&lt;a</div>
           <div class="ind-5">
@@ -339,7 +411,7 @@ function validateInputs(): boolean {
             <div class="ind-3">&lt;/div&gt;</div>
           </div></span
         >
-        <span v-if="!store.disableURLs"
+        <span v-if="!store.disableEmailURL"
           ><div class="ind-3">&lt;div class="faculty-icon--container"&gt;</div>
           <div class="ind-4">&lt;a</div>
           <div class="ind-5">

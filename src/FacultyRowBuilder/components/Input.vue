@@ -8,7 +8,7 @@ import broomSVG from "../../assets/broom-svg.vue";
 import hideSVG from "../../assets/hide-svg.vue";
 
 // TODO:
-// Add toggle to disable just email or just profile urls
+// Consider refactoring validateInputs function in Preview.vue
 // Restyle + make bulleted input have same key controls as titles
 // ... that should be it for core functionality, then just style adjustments - like subtle section differentiation in the input box
 
@@ -23,14 +23,27 @@ function clearFields() {
   store.titles = [];
   store.bullets = [];
   store.enableBullets = false;
-  store.disableURLs = false;
+  store.disableProfileURL = false;
+  store.disableEmailURL = false;
+  store.invalidProfileURLMessage = false;
+  store.invalidEmailMessage = false;
 }
 
 function clearURLs(urlType: string) {
   if (urlType === "profile") {
     store.profileLink = "";
+    store.invalidProfileURLMessage = false;
   } else if (urlType === "email") {
     store.email = "";
+    store.invalidEmailMessage = false;
+  }
+}
+
+function toggleURLDisplay(urlType: string) {
+  if (urlType === "profile") {
+    store.disableProfileURL = !store.disableProfileURL;
+  } else if (urlType === "email") {
+    store.disableEmailURL = !store.disableEmailURL;
   }
 }
 
@@ -100,20 +113,8 @@ function formatEmail(event: Event) {
           </div>
           <Titles />
           <Bullets />
-          <div class="checkbox-container url-checkboxes">
-            <div>
-              <input
-                id="checkbox"
-                type="checkbox"
-                v-model="store.disableURLs"
-              />
-              <h4>
-                <label for="checkbox">Remove URLs from Row</label>
-              </h4>
-            </div>
-          </div>
           <div class="form-item">
-            <h4 class="url-item" :class="{ disabled: store.disableURLs }">
+            <h4 class="url-item" :class="{ disabled: store.disableProfileURL }">
               Profile URL
               <span
                 class="invalid-url-message"
@@ -125,17 +126,25 @@ function formatEmail(event: Event) {
               <input
                 v-model.trim="store.profileLink"
                 type="text"
-                :disabled="store.disableURLs"
+                :disabled="store.disableProfileURL"
                 @paste="formatProfileURL($event)"
                 @keyup="formatProfileURL($event)"
                 placeholder="Profile URL"
               />
-              <button @click="clearURLs('profile')"><broomSVG /></button>
-              <button><hideSVG /></button>
+              <button class="clear-url" @click="clearURLs('profile')">
+                <broomSVG />
+              </button>
+              <button
+                class="hide"
+                :class="{ active: store.disableProfileURL }"
+                @click="toggleURLDisplay('profile')"
+              >
+                <hideSVG />
+              </button>
             </div>
           </div>
           <div class="form-item">
-            <h4 class="url-item" :class="{ disabled: store.disableURLs }">
+            <h4 class="url-item" :class="{ disabled: store.disableEmailURL }">
               Email or Contact URL
               <span
                 class="invalid-url-message"
@@ -147,13 +156,21 @@ function formatEmail(event: Event) {
               <input
                 v-model.trim="store.email"
                 type="text"
-                :disabled="store.disableURLs"
+                :disabled="store.disableEmailURL"
                 @paste="formatEmail($event)"
                 @keyup="formatEmail($event)"
                 placeholder="Email URL"
               />
-              <button @click="clearURLs('email')"><broomSVG /></button>
-              <button><hideSVG /></button>
+              <button class="clear-url" @click="clearURLs('email')">
+                <broomSVG />
+              </button>
+              <button
+                class="hide"
+                :class="{ active: store.disableEmailURL }"
+                @click="toggleURLDisplay('email')"
+              >
+                <hideSVG />
+              </button>
             </div>
           </div>
         </div>
@@ -254,14 +271,35 @@ function formatEmail(event: Event) {
   .url-input-block {
     display: flex;
     gap: 1rem;
-
     button {
-      background-color: #005fd7;
       padding: 0.2em 0.35em 0.05em 0.35em;
       border: solid 2px transparent;
-      &:hover {
-        background-color: #013c85;
+    }
+    button.clear-url {
+      path {
+        fill: #000000;
       }
+      border: solid 2px #cfcfd5;
+      &:hover {
+        background-color: #d7d6d6;
+      }
+    }
+    button.hide {
+      path {
+        stroke: #000000;
+      }
+      border: solid 3px #afafbc;
+      transition: border-color 0.1s;
+      &:hover {
+        border-color: #79797e;
+      }
+    }
+    button.hide.active {
+      path {
+        stroke: #ffffff;
+      }
+      background-color: #005fd7;
+      border: solid 3px transparent;
     }
   }
 }
