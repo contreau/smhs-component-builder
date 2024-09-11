@@ -16,6 +16,5 @@ export const store = reactive({
   invalidEmailMessage: false,
   disableProfileURL: false,
   disableEmailURL: false,
-  disableURLs: false,
   enableBullets: false,
 });
