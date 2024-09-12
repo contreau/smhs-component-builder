@@ -8,7 +8,7 @@ import broomSVG from "../../assets/broom-svg.vue";
 import hideSVG from "../../assets/hide-svg.vue";
 
 // TODO:
-// Consider refactoring validateInputs function in Preview.vue
+// Refactor copyHTML function in Previews.vue?
 // Restyle + make bulleted input have same key controls as titles
 // ... that should be it for core functionality, then just style adjustments - like subtle section differentiation in the input box
 

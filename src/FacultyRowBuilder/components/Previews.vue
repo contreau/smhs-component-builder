@@ -118,92 +118,60 @@ async function copyHTML() {
 }
 
 function validateInputs(): boolean {
-  let states: string[] = [];
-  if (store.disableProfileURL) {
-    // profile is toggled off
-    if (store.enableBullets) {
-      states = [store.nameText, store.titleText, store.email, store.bulletText];
-    } else {
-      states = [store.nameText, store.titleText, store.email];
-    }
-  } else if (store.disableEmailURL) {
-    // email is toggled off
-    if (store.enableBullets) {
-      states = [
-        store.nameText,
-        store.titleText,
-        store.profileLink,
-        store.bulletText,
-      ];
-    } else {
-      states = [store.nameText, store.titleText, store.profileLink];
-    }
-  } else if (store.disableEmailURL && store.disableProfileURL) {
-    // both profile and email are toggled off
-    if (store.enableBullets) {
-      states = [store.nameText, store.titleText, store.bulletText];
-    } else {
-      states = [store.nameText, store.titleText];
-    }
-  }
+  const requiredFields: Array<string | string[]> = [
+    store.nameText,
+    store.titleText,
+  ];
 
-  // If NOTHING is disabled
-  else if (!store.disableProfileURL && !store.disableEmailURL) {
-    if (store.enableBullets) {
-      states = [
-        store.nameText,
-        store.titleText,
-        store.profileLink,
-        store.email,
-        store.bulletText,
-      ];
-    } else {
-      states = [
-        store.nameText,
-        store.titleText,
-        store.profileLink,
-        store.email,
-      ];
-    }
-  }
-
-  if (store.invalidEmailMessage || store.invalidProfileURLMessage) {
+  function showMissingFieldMessage() {
     store.missingFieldMessage = true;
     setTimeout(() => {
       store.missingFieldMessage = false;
     }, 1200);
+  }
+
+  // conditionally build the requiredFields array
+  if (store.titles.length > 0) {
+    requiredFields.push(store.titles);
+  }
+  if (store.enableBullets) {
+    requiredFields.push(store.bulletText);
+    if (store.bullets.length > 0) {
+      requiredFields.push(store.bullets);
+    }
+  }
+  if (!store.disableProfileURL) {
+    requiredFields.push(store.profileLink);
+  }
+  if (!store.disableEmailURL) {
+    requiredFields.push(store.email);
+  }
+
+  // validate required fields
+  if (store.invalidEmailMessage || store.invalidProfileURLMessage) {
+    showMissingFieldMessage();
     return false;
-  } else {
-    // normal checking of fields - above block exits early if either of the url inputs are invalid
-    let status = false;
-    if (store.titles.length > 0) {
-      // check extra titles
-      for (let title of store.titles) {
-        if (title !== "") {
+  }
+
+  let status: boolean = false;
+  for (let field of requiredFields) {
+    if (Array.isArray(field)) {
+      for (let input of field) {
+        if (input !== "") {
           status = true;
         } else {
-          store.missingFieldMessage = true;
-          setTimeout(() => {
-            store.missingFieldMessage = false;
-          }, 1200);
+          showMissingFieldMessage();
           return false;
         }
       }
+    } else if (typeof field === "string" && field !== "") {
+      status = true;
+    } else {
+      showMissingFieldMessage();
+      return false;
     }
-    // check all default inputs
-    for (let state of states) {
-      if (state !== "") {
-        status = true;
-      } else {
-        store.missingFieldMessage = true;
-        setTimeout(() => {
-          store.missingFieldMessage = false;
-        }, 1200);
-        return false;
-      }
-    }
-    return true ? status : false;
   }
+  return status;
 }
 </script>
 
