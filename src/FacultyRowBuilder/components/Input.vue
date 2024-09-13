@@ -8,9 +8,10 @@ import broomSVG from "../../assets/broom-svg.vue";
 import hideSVG from "../../assets/hide-svg.vue";
 
 // TODO:
+// Modify validateInput() / store to highlight the inputs in red that have invalid input upon clicking the copy button
 // Refactor copyHTML function in Previews.vue?
 // Restyle + make bulleted input have same key controls as titles
-// ... that should be it for core functionality, then just style adjustments - like subtle section differentiation in the input box
+// style adjustments as seen fit
 
 function clearFields() {
   store.titleText = "";
@@ -102,8 +103,8 @@ function formatEmail(event: Event) {
             <broomSVG />&nbsp;Clear All Fields
           </button>
         </div>
-        <div class="form">
-          <div class="form-item">
+        <div class="form-group">
+          <div class="form-item form-row">
             <h4>Name</h4>
             <input
               v-model.trim="store.nameText"
@@ -112,8 +113,8 @@ function formatEmail(event: Event) {
             />
           </div>
           <Titles />
-          <Bullets />
-          <div class="form-item">
+
+          <div class="form-item form-row">
             <h4 class="url-item" :class="{ disabled: store.disableProfileURL }">
               Profile URL
               <span
@@ -124,6 +125,7 @@ function formatEmail(event: Event) {
             </h4>
             <div class="url-input-block">
               <input
+                :class="{ invalid: store.invalidProfileURLMessage }"
                 v-model.trim="store.profileLink"
                 type="text"
                 :disabled="store.disableProfileURL"
@@ -143,7 +145,7 @@ function formatEmail(event: Event) {
               </button>
             </div>
           </div>
-          <div class="form-item">
+          <div class="form-item form-row">
             <h4 class="url-item" :class="{ disabled: store.disableEmailURL }">
               Email or Contact URL
               <span
@@ -154,6 +156,7 @@ function formatEmail(event: Event) {
             </h4>
             <div class="url-input-block">
               <input
+                :class="{ invalid: store.invalidEmailMessage }"
                 v-model.trim="store.email"
                 type="text"
                 :disabled="store.disableEmailURL"
@@ -173,6 +176,9 @@ function formatEmail(event: Event) {
               </button>
             </div>
           </div>
+        </div>
+        <div class="form-group">
+          <Bullets />
         </div>
       </section>
       <Previews />
@@ -213,6 +219,8 @@ function formatEmail(event: Event) {
   justify-content: space-between;
 
   :is(h3):first-of-type {
+    font-size: 1.6rem;
+    font-weight: 900;
     margin-top: 0;
     margin-bottom: 0;
   }
@@ -233,10 +241,10 @@ function formatEmail(event: Event) {
   }
 }
 
-.form {
+.form-group {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 1.5rem;
 
   :is(input) {
     font-size: 1.1rem;
@@ -251,6 +259,10 @@ function formatEmail(event: Event) {
     &:disabled {
       cursor: not-allowed;
     }
+  }
+
+  :is(input.invalid) {
+    border-color: #ff5640;
   }
 
   :is(button) {
@@ -307,6 +319,8 @@ function formatEmail(event: Event) {
 button.clear-button {
   background-color: #005fd7;
   color: #ffffff;
+  font-size: 1.1rem;
+  font-weight: 500;
   border: solid 2px transparent;
   &:hover {
     background-color: #013c85;
@@ -324,8 +338,15 @@ div.flex-container {
   align-items: center;
 }
 
+.form-row {
+  margin: 0.65rem 0;
+}
+
 .form-item {
   :is(h4) {
+    color: #0051b3;
+    font-size: 1.3rem;
+    font-weight: 550;
     margin-top: 0rem;
     margin-bottom: 0.5rem;
   }

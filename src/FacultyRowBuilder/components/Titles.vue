@@ -60,7 +60,7 @@ function navigateBetweenTitles(event: KeyboardEvent) {
   <div class="form-item">
     <h4>
       Titles
-      <span style="font-weight: 450"
+      <span style="font-weight: 400; color: #000000"
         >({{ store.remainingTitles }} more remaining)</span
       >
     </h4>
@@ -106,7 +106,7 @@ function navigateBetweenTitles(event: KeyboardEvent) {
 <style scoped>
 p.shortcut-info {
   margin-top: 0;
-  font-size: 0.85rem;
+  font-size: 0.925rem;
   :is(span).key {
     font-weight: 500;
     background-color: #d2d2d369;
