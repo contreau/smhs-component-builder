@@ -104,6 +104,13 @@ function formatEmail(event: Event) {
             <resetSVG />&nbsp;Reset All Fields
           </button>
         </div>
+        <p class="shortcut-info">
+          <span class="title">Keyboard shortcuts for Titles and Bullets:</span>
+          <br />
+          <span class="key">Enter</span> creates new entries.
+          <span class="key">Shift + Backspace</span>
+          deletes them. <span class="key">&uarr;&darr;</span> navigates.
+        </p>
         <div class="form-group">
           <div class="form-item form-row">
             <h4>Name</h4>
@@ -239,6 +246,28 @@ function formatEmail(event: Event) {
     &:focus-visible {
       border: solid 2px #9b9b9b;
     }
+  }
+}
+
+p.shortcut-info {
+  background-color: #d2d2d369;
+  border-radius: 6px;
+  margin-top: 0;
+  font-size: 0.87rem;
+  padding: 0.6em 0.5em;
+  :is(br) {
+    margin-bottom: 0.6em;
+  }
+  :is(span).title {
+    font-weight: 600;
+    font-size: 0.925rem;
+    text-decoration: underline;
+  }
+  :is(span).key {
+    font-weight: 500;
+    background-color: #ffffff;
+    padding: 0.1em 0.25em 0.25em 0.25em;
+    border-radius: 5px;
   }
 }
 

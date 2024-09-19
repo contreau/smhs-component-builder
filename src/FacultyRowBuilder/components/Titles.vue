@@ -64,11 +64,6 @@ function navigateBetweenTitles(event: KeyboardEvent) {
         >({{ store.remainingTitles }} more remaining)</span
       >
     </h4>
-    <p class="shortcut-info">
-      <span class="key">Enter</span> creates new titles.
-      <span class="key">Shift + Backspace</span>
-      deletes them. <span class="key">&uarr;&darr;</span> navigates.
-    </p>
     <input
       v-model.trim="store.titleText"
       type="text"
@@ -102,16 +97,3 @@ function navigateBetweenTitles(event: KeyboardEvent) {
     </div>
   </div>
 </template>
-
-<style scoped>
-p.shortcut-info {
-  margin-top: 0;
-  font-size: 0.925rem;
-  :is(span).key {
-    font-weight: 500;
-    background-color: #d2d2d369;
-    padding: 0.1em 0.25em 0.25em 0.25em;
-    border-radius: 5px;
-  }
-}
-</style>

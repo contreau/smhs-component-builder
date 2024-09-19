@@ -45,6 +45,7 @@ html {
 html {
   scrollbar-gutter: stable both-edges;
   background-color: #f1f1f1;
+  scroll-behavior: smooth;
 }
 
 body {
