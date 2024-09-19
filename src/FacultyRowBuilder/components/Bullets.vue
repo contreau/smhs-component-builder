@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { store } from "../store";
+import { nextTick, ref } from "vue";
 import trashSVG from "../../assets/trash-svg.vue";
 
 function trimInput(event: Event, state: string) {
@@ -53,7 +54,7 @@ function clearBullets() {
       v-model="store.enableBullets"
     />
     <h4>
-      <label for="checkbox">Add Bulleted Information (Optional) </label>
+      <label for="checkbox">Add Bulleted Text (Optional) </label>
     </h4>
   </div>
 

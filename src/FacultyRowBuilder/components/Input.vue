@@ -5,6 +5,7 @@ import Titles from "./Titles.vue";
 import Bullets from "./Bullets.vue";
 import Previews from "./Previews.vue";
 import broomSVG from "../../assets/broom-svg.vue";
+import resetSVG from "../../assets/reset-svg.vue";
 import hideSVG from "../../assets/hide-svg.vue";
 
 // TODO:
@@ -100,7 +101,7 @@ function formatEmail(event: Event) {
         <div class="form-top">
           <h3>Edit Fields</h3>
           <button class="clear-button" @click="clearFields">
-            <broomSVG />&nbsp;Clear All Fields
+            <resetSVG />&nbsp;Reset All Fields
           </button>
         </div>
         <div class="form-group">
@@ -288,11 +289,9 @@ function formatEmail(event: Event) {
       border: solid 2px transparent;
     }
     :is(button).clear-url {
-      :is(path) {
-        fill: #000000;
-      }
       border: solid 2px #cfcfd5;
-      &:hover {
+      &:hover,
+      &:focus {
         background-color: #d7d6d6;
       }
     }
@@ -302,7 +301,8 @@ function formatEmail(event: Event) {
       }
       border: solid 3px #afafbc;
       transition: border-color 0.1s;
-      &:hover {
+      &:hover,
+      &:focus {
         border-color: #79797e;
       }
     }
@@ -320,7 +320,7 @@ button.clear-button {
   background-color: #005fd7;
   color: #ffffff;
   font-size: 1.1rem;
-  font-weight: 500;
+  font-weight: 400;
   border: solid 2px transparent;
   &:hover {
     background-color: #013c85;
@@ -329,7 +329,7 @@ button.clear-button {
     border: solid 2px #000000;
   }
   :is(svg) {
-    vertical-align: -6px;
+    vertical-align: -5px;
   }
 }
 
@@ -386,6 +386,7 @@ div.flex-container {
   align-items: center;
   margin-top: 0.4rem;
   :is(h4) {
+    font-weight: 500;
     margin-top: 0.5rem;
     margin-bottom: 0.5rem;
   }
