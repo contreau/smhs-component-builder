@@ -10,9 +10,6 @@ import hideSVG from "../../assets/hide-svg.vue";
 
 // TODO:
 // Modify validateInput() / store to highlight the inputs in red that have invalid input upon clicking the copy button
-// Refactor copyHTML function in Previews.vue?
-// Restyle + make bulleted input have same key controls as titles
-// style adjustments as seen fit
 
 function clearFields() {
   store.titleText = "";
