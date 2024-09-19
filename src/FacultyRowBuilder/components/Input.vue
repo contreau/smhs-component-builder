@@ -283,12 +283,12 @@ function formatEmail(event: Event) {
   .url-input-block {
     display: flex;
     gap: 1rem;
-    button {
+    :is(button) {
       padding: 0.2em 0.35em 0.05em 0.35em;
       border: solid 2px transparent;
     }
-    button.clear-url {
-      path {
+    :is(button).clear-url {
+      :is(path) {
         fill: #000000;
       }
       border: solid 2px #cfcfd5;
@@ -296,8 +296,8 @@ function formatEmail(event: Event) {
         background-color: #d7d6d6;
       }
     }
-    button.hide {
-      path {
+    :is(button).hide {
+      :is(path) {
         stroke: #000000;
       }
       border: solid 3px #afafbc;
@@ -306,8 +306,8 @@ function formatEmail(event: Event) {
         border-color: #79797e;
       }
     }
-    button.hide.active {
-      path {
+    :is(button).hide.active {
+      :is(path) {
         stroke: #ffffff;
       }
       background-color: #005fd7;
@@ -328,7 +328,7 @@ button.clear-button {
   &:focus-visible {
     border: solid 2px #000000;
   }
-  svg {
+  :is(svg) {
     vertical-align: -6px;
   }
 }
@@ -401,7 +401,7 @@ div.flex-container {
 
 .url-checkboxes {
   justify-content: space-between;
-  div {
+  :is(div) {
     display: flex;
     gap: 0.5rem;
   }

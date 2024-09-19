@@ -518,14 +518,14 @@ section.preview {
       min-width: 151px;
     }
 
-    svg {
+    :is(svg) {
       vertical-align: -5px;
     }
   }
 }
 
 .faculty-icon--color {
-  svg {
+  :is(svg) {
     vertical-align: -7px;
   }
 }
