@@ -118,33 +118,45 @@ async function copyHTML() {
 }
 
 function validateInputs(): boolean {
-  const requiredFields: Array<string | string[]> = [
+  const requiredFieldsValues: Array<string | string[]> = [
     store.nameText,
     store.titleText,
   ];
 
   function showMissingFieldMessage() {
+    const allInputFields: Array<HTMLInputElement> = Array.from(
+      document.querySelectorAll("input")
+    );
+    for (let input of allInputFields) {
+      if (input.value === "" && !input.disabled) {
+        console.log(input);
+        input.classList.add("invalid");
+        setTimeout(() => {
+          input.classList.remove("invalid");
+        }, 2000);
+      }
+    }
     store.missingFieldMessage = true;
     setTimeout(() => {
       store.missingFieldMessage = false;
-    }, 1200);
+    }, 2000);
   }
 
-  // conditionally build the requiredFields array
+  // conditionally build the requiredFieldsValues array
   if (store.titles.length > 0) {
-    requiredFields.push(store.titles);
+    requiredFieldsValues.push(store.titles);
   }
   if (store.enableBullets) {
-    requiredFields.push(store.bulletText);
+    requiredFieldsValues.push(store.bulletText);
     if (store.bullets.length > 0) {
-      requiredFields.push(store.bullets);
+      requiredFieldsValues.push(store.bullets);
     }
   }
   if (!store.disableProfileURL) {
-    requiredFields.push(store.profileLink);
+    requiredFieldsValues.push(store.profileLink);
   }
   if (!store.disableEmailURL) {
-    requiredFields.push(store.email);
+    requiredFieldsValues.push(store.email);
   }
 
   // validate required fields
@@ -154,7 +166,7 @@ function validateInputs(): boolean {
   }
 
   let status: boolean = false;
-  for (let field of requiredFields) {
+  for (let field of requiredFieldsValues) {
     if (Array.isArray(field)) {
       for (let input of field) {
         if (input !== "") {

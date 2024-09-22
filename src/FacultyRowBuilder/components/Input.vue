@@ -8,9 +8,6 @@ import broomSVG from "../../assets/broom-svg.vue";
 import resetSVG from "../../assets/reset-svg.vue";
 import hideSVG from "../../assets/hide-svg.vue";
 
-// TODO:
-// Modify validateInput() / store to highlight the inputs in red that have invalid input upon clicking the copy button
-
 function clearFields() {
   store.titleText = "";
   store.nameText = "";
