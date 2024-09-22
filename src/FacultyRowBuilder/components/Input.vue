@@ -209,11 +209,11 @@ function formatEmail(event: Event) {
   top: 1rem;
   align-self: start;
   min-width: 490px;
-  box-shadow: 0px 0px 1.5px #cfcfcf;
+  box-shadow: var(--form-shadow);
   border-radius: 6px;
   padding: 0.8em;
   padding-bottom: 1em;
-  background-color: #ffffff;
+  background-color: var(--white);
   overflow-y: hidden;
 }
 
@@ -234,14 +234,14 @@ function formatEmail(event: Event) {
     max-width: fit-content;
     font-size: 1rem;
     padding: 0.2em;
-    border: solid 2px #e4e4e7;
+    border: solid 2px var(--button-border);
     border-radius: 6px;
     outline: none;
     cursor: pointer;
-    background-color: #e4e4e768;
+    background-color: var(--button-bg-color);
     transition: background-color 0.3s;
     &:focus-visible {
-      border: solid 2px #9b9b9b;
+      border: solid 2px var(--border-focus);
     }
   }
 }
@@ -262,7 +262,7 @@ p.shortcut-info {
   }
   :is(span).key {
     font-weight: 500;
-    background-color: #ffffff;
+    background-color: var(--white);
     padding: 0.1em 0.25em 0.25em 0.25em;
     border-radius: 5px;
   }
@@ -277,11 +277,11 @@ p.shortcut-info {
     font-size: 1.1rem;
     max-width: 400px;
     padding: 0.2em;
-    border: solid 2px #e2e2e6;
+    border: solid 2px var(--input-border);
     border-radius: 6px;
     outline: none;
     &:focus-visible {
-      border: solid 2px #9b9b9b;
+      border: solid 2px var(--border-focus);
     }
     &:disabled {
       cursor: not-allowed;
@@ -289,21 +289,21 @@ p.shortcut-info {
   }
 
   :is(input.invalid) {
-    border-color: #ff5640;
+    border-color: var(--red);
   }
 
   :is(button) {
     max-width: fit-content;
     font-size: 1rem;
     padding: 0.2em;
-    border: solid 2px #e4e4e7;
+    border: solid 2px var(--button-border);
     border-radius: 6px;
     outline: none;
     cursor: pointer;
-    background-color: #e4e4e768;
+    background-color: var(--button-bg-color);
     transition: background-color 0.3s;
     &:focus-visible {
-      border: solid 2px #9b9b9b;
+      border: solid 2px var(--border-focus);
     }
   }
 
@@ -334,22 +334,22 @@ p.shortcut-info {
     }
     :is(button).hide.active {
       :is(path) {
-        stroke: #ffffff;
+        stroke: var(--white);
       }
-      background-color: #005fd7;
+      background-color: var(--blue);
       border: solid 3px transparent;
     }
   }
 }
 
 button.clear-button {
-  background-color: #005fd7;
-  color: #ffffff;
+  background-color: var(--blue);
+  color: var(--white);
   font-size: 1.1rem;
   font-weight: 400;
   border: solid 2px transparent;
   &:hover {
-    background-color: #013c85;
+    background-color: var(--blue-hover);
   }
   &:focus-visible {
     border: solid 2px #000000;
@@ -388,8 +388,8 @@ div.flex-container {
 
   .delete-button {
     margin-left: 0.5em;
-    background-color: #ff5640;
-    color: #ffffff;
+    background-color: var(--red);
+    color: var(--white);
     border: solid 2px transparent;
     padding-right: 0.4em;
     padding-left: 0.4em;
@@ -398,10 +398,10 @@ div.flex-container {
     outline: none;
     transition: background-color 0.3s;
     &:hover {
-      background-color: #d73d29;
+      background-color: var(--red-hover);
     }
     &:focus-visible {
-      border: solid 2px #8d2618;
+      border: solid 2px var(--red-focus);
     }
   }
 }
@@ -435,12 +435,12 @@ div.flex-container {
 }
 
 .disabled {
-  color: #b4b4b4;
+  color: var(--disabled);
 }
 
 .invalid-url-message {
-  color: #ffffff;
-  background-color: #ff5640;
+  color: var(--white);
+  background-color: var(--red);
   padding: 0.1em;
   font-weight: 400;
   padding: 0.1em 0.4em;

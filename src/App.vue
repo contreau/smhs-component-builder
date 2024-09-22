@@ -31,8 +31,22 @@ const currentView = computed(() => {
 
 <style>
 :root {
+  --app-bg-color: #f1f1f1;
+  --blue: #005fd7;
+  --blue-hover: #013c85;
+  --body-bg-color: #ecebeb;
+  --border-focus: #9b9b9b;
+  --button-bg-color: #e4e4e768;
+  --button-border: #e4e4e7;
+  --disabled: #b4b4b4;
+  --form-shadow: 0px 0px 1.5px #cfcfcf;
   --gw: #022f4e;
+  --input-border: #e2e2e6;
   --orange: #ff2f00;
+  --red: #ff5640;
+  --red-focus: #8d2618;
+  --red-hover: #d73d29;
+  --select-shadow: 0px 0px 1.5px #989898;
   --white: #ffffff;
 }
 
@@ -44,13 +58,13 @@ html {
 
 html {
   scrollbar-gutter: stable both-edges;
-  background-color: #f1f1f1;
+  background-color: var(--app-bg-color);
   scroll-behavior: smooth;
 }
 
 body {
   background-image: url(./assets/plus.svg);
-  background-color: #ecebeb;
+  background-color: var(--body-bg-color);
   background-repeat: space;
   background-size: 15px;
   min-height: 100vh;
@@ -68,7 +82,7 @@ h2 {
 .masthead {
   display: flex;
   align-items: center;
-  background-color: #f1f1f1;
+  background-color: var(--app-bg-color);
   box-shadow: rgba(33, 35, 38, 0.43) 0px 10px 10px -10px;
   padding: 0 1.5em;
 
@@ -90,7 +104,7 @@ h2 {
     font-size: 1.25rem;
     border: transparent;
     border-radius: 6px;
-    box-shadow: 0px 0px 1.5px #989898;
+    box-shadow: var(--select-shadow);
     padding: 0.15em 0.4em;
   }
 }

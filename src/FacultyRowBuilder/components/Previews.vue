@@ -453,10 +453,10 @@ section.preview {
 }
 
 .html-display-container {
-  background-color: #ffffff;
+  background-color: var(--white);
   padding: 0.5em;
   border-radius: 6px;
-  box-shadow: 0px 0px 1.5px #cfcfcf;
+  box-shadow: 0px 0px 1.5px var(--form-shadow);
   margin-bottom: 1rem;
 }
 
@@ -465,14 +465,14 @@ section.preview {
   padding: 0.3em 0.5em;
   font-weight: 500;
   max-width: fit-content;
-  background-color: #ffffff;
+  background-color: var(--white);
   border-radius: 6px;
-  box-shadow: 0px 0px 1.5px #cfcfcf;
+  box-shadow: 0px 0px 1.5px var(--form-shadow);
 }
 
 .input-text {
   font-weight: 800;
-  color: #348eff;
+  color: var(--blue);
 }
 
 .tabs {
@@ -484,8 +484,8 @@ section.preview {
     margin-top: 0;
     font-size: 1.25rem;
     border-radius: 6px;
-    color: #ffffff;
-    background-color: #ff5640;
+    color: var(--white);
+    background-color: var(--red);
     padding: 0.4em;
     transition: opacity 0.3s;
     opacity: 0;
@@ -499,7 +499,7 @@ section.preview {
     margin-top: 0;
     padding: 0.4em;
     cursor: pointer;
-    background-color: #ffffff;
+    background-color: var(--white);
     transition: 0.3s all;
     font-weight: 400;
     text-align: center;
